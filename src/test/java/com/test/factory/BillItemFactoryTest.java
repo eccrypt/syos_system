@@ -1,9 +1,9 @@
 package com.test.factory;
 
-import com.syos.factory.BillItemFactory;
-import com.syos.model.BillItem;
-import com.syos.model.Product;
-import com.syos.strategy.PricingStrategy;
+import com.syos.application.factory.BillItemFactory;
+import com.syos.domain.model.BillItem;
+import com.syos.domain.model.Product;
+import com.syos.application.strategy.PricingStrategy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

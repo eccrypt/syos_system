@@ -3,7 +3,7 @@ package com.test.config;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.syos.config.ConfigLoader;
+import com.syos.infrastructure.config.ConfigLoader;
 
 import static org.junit.jupiter.api.Assertions.*;
 

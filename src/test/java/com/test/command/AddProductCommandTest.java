@@ -1,9 +1,9 @@
 package com.test.command;
 
-import com.syos.command.AddProductCommand;
-import com.syos.model.Product;
-import com.syos.repository.ProductRepository;
-import com.syos.service.ProductService;
+import com.syos.application.command.AddProductCommand;
+import com.syos.domain.model.Product;
+import com.syos.infrastructure.repository.ProductRepository;
+import com.syos.application.service.ProductService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

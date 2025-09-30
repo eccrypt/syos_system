@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.syos.service.StockAlertService;
+import com.syos.application.service.StockAlertService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

@@ -1,15 +1,15 @@
 package com.test.service;
 
-import com.syos.dto.BillItemReportDTO;
-import com.syos.dto.BillReportDTO;
-import com.syos.dto.ProductStockReportItemDTO;
-import com.syos.dto.ReportDTOMapper;
-import com.syos.model.Bill;
-import com.syos.model.BillItem;
-import com.syos.model.Product;
-import com.syos.repository.ReportRepository; // Only ReportRepository needs to be mocked for ReportService tests
-import com.syos.service.ReportService;
-import com.syos.util.CommonVariables;
+import com.syos.application.dto.BillItemReportDTO;
+import com.syos.application.dto.BillReportDTO;
+import com.syos.application.dto.ProductStockReportItemDTO;
+import com.syos.application.dto.ReportDTOMapper;
+import com.syos.domain.model.Bill;
+import com.syos.domain.model.BillItem;
+import com.syos.domain.model.Product;
+import com.syos.infrastructure.repository.ReportRepository; // Only ReportRepository needs to be mocked for ReportService tests
+import com.syos.application.service.ReportService;
+import com.syos.infrastructure.util.CommonVariables;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

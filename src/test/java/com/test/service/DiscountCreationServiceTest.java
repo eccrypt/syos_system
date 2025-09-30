@@ -1,8 +1,8 @@
 package com.test.service;
 
-import com.syos.enums.DiscountType;
-import com.syos.repository.DiscountRepository;
-import com.syos.service.DiscountCreationService;
+import com.syos.domain.enums.DiscountType;
+import com.syos.infrastructure.repository.DiscountRepository;
+import com.syos.application.service.DiscountCreationService;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

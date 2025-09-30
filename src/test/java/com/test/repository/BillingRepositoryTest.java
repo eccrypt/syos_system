@@ -1,11 +1,11 @@
 package com.test.repository;
 
 import com.syos.db.DatabaseManager;
-import com.syos.model.Bill;
-import com.syos.model.BillItem;
-import com.syos.model.Product;
-import com.syos.repository.BillingRepository;
-import com.syos.repository.BillingRepositoryImpl;
+import com.syos.domain.model.Bill;
+import com.syos.domain.model.BillItem;
+import com.syos.domain.model.Product;
+import com.syos.infrastructure.repository.BillingRepository;
+import com.syos.infrastructure.repository.BillingRepositoryImpl;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,8 @@
 package com.test.command;
 
-import com.syos.command.CreateDiscountCommand;
-import com.syos.enums.DiscountType;
-import com.syos.repository.DiscountRepository;
+import com.syos.application.command.CreateDiscountCommand;
+import com.syos.domain.enums.DiscountType;
+import com.syos.infrastructure.repository.DiscountRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,7 +1,7 @@
 package com.test.command;
 
-import com.syos.command.MoveToShelfCommand;
-import com.syos.singleton.InventoryManager;
+import com.syos.application.command.MoveToShelfCommand;
+import com.syos.infrastructure.singleton.InventoryManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

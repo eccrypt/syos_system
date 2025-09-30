@@ -1,11 +1,11 @@
 package com.test.service;
 
-import com.syos.model.Discount;
-import com.syos.model.Product;
-import com.syos.enums.DiscountType; // Assuming you have a DiscountType enum
-import com.syos.repository.DiscountRepository;
-import com.syos.repository.ProductRepository;
-import com.syos.service.DiscountAssignmentService;
+import com.syos.domain.model.Discount;
+import com.syos.domain.model.Product;
+import com.syos.domain.enums.DiscountType; // Assuming you have a DiscountType enum
+import com.syos.infrastructure.repository.DiscountRepository;
+import com.syos.infrastructure.repository.ProductRepository;
+import com.syos.application.service.DiscountAssignmentService;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

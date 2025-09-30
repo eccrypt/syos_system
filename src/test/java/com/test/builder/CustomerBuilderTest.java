@@ -1,6 +1,6 @@
 package com.test.builder;
 
-import com.syos.model.Customer;
+import com.syos.domain.model.Customer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

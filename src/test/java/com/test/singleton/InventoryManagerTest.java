@@ -1,14 +1,14 @@
 package com.test.singleton;
 
-import com.syos.model.Product;
-import com.syos.model.ShelfStock;
-import com.syos.model.StockBatch;
-import com.syos.observer.StockObserver;
-import com.syos.repository.ProductRepository;
-import com.syos.repository.ShelfStockRepository;
-import com.syos.repository.StockBatchRepository;
-import com.syos.singleton.InventoryManager;
-import com.syos.strategy.ShelfStrategy;
+import com.syos.domain.model.Product;
+import com.syos.domain.model.ShelfStock;
+import com.syos.domain.model.StockBatch;
+import com.syos.domain.observer.StockObserver;
+import com.syos.infrastructure.repository.ProductRepository;
+import com.syos.infrastructure.repository.ShelfStockRepository;
+import com.syos.infrastructure.repository.StockBatchRepository;
+import com.syos.infrastructure.singleton.InventoryManager;
+import com.syos.application.strategy.ShelfStrategy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

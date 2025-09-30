@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.syos.config.ConfigLoader;
+import com.syos.infrastructure.config.ConfigLoader;
 
 public class DatabaseManager {
 	private static final String URL = ConfigLoader.get("db.url");

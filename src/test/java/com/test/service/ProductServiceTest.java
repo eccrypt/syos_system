@@ -1,10 +1,10 @@
 package com.test.service;
 
-import com.syos.model.Product;
-import com.syos.repository.ProductRepository;
-import com.syos.service.ProductService;
-import com.syos.service.ProductServiceImpl;
-import com.syos.util.CommonVariables;
+import com.syos.domain.model.Product;
+import com.syos.infrastructure.repository.ProductRepository;
+import com.syos.application.service.ProductService;
+import com.syos.application.service.ProductServiceImpl;
+import com.syos.infrastructure.util.CommonVariables;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

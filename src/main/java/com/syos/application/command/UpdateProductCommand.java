@@ -1,0 +1,81 @@
+package com.syos.application.command;
+
+import com.syos.application.service.ProductService;
+import com.syos.domain.model.Product;
+
+import java.util.Scanner;
+
+public class UpdateProductCommand implements Command {
+	private final ProductService productService;
+	public final Scanner scanner;
+
+	public UpdateProductCommand(ProductService productService, Scanner scanner) {
+		this.productService = productService;
+		this.scanner = scanner;
+	}
+
+	@Override
+	public void execute() {
+		System.out.println("\n--- Update Product Name ---");
+
+		String productCode = getProductCodeInput();
+		if (productCode == null) {
+			return;
+		}
+
+		Product existingProduct = productService.findProductByCode(productCode);
+		if (existingProduct == null) {
+			System.out.println("Product with code '" + productCode + "' not found.");
+			return;
+		}
+
+		displayCurrentProductDetails(existingProduct);
+
+		String newName = getNewProductNameInput();
+		if (newName == null) {
+			return;
+		}
+
+		performProductUpdate(productCode, newName);
+	}
+
+	private String getProductCodeInput() {
+		System.out.print("Enter product code to update: ");
+		String productCode = scanner.nextLine().trim();
+		if (productCode.isEmpty()) {
+			System.out.println("Error: Product code cannot be empty.");
+			return null;
+		}
+		return productCode;
+	}
+
+	private void displayCurrentProductDetails(Product existingProduct) {
+		System.out.println("Current Product Details:");
+		System.out.println("Code: " + existingProduct.getCode());
+		System.out.println("Name: " + existingProduct.getName());
+		System.out.println("Price: " + String.format("%.2f", existingProduct.getPrice()));
+
+	}
+
+	private String getNewProductNameInput() {
+		System.out.print("Enter new product name: ");
+		String newName = scanner.nextLine().trim();
+
+		if (newName.isEmpty()) {
+			System.out.println("Product name cannot be empty. No changes made.");
+			return null;
+		}
+		return newName;
+	}
+
+	private void performProductUpdate(String productCode, String newName) {
+		try {
+			productService.updateProductName(productCode, newName);
+			System.out.println("Product name for '" + productCode + "' updated successfully to '" + newName + "'!");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error: " + e.getMessage());
+		} catch (RuntimeException e) {
+			System.out.println("An unexpected error occurred while updating the product name: " + e.getMessage());
+		}
+	}
+}

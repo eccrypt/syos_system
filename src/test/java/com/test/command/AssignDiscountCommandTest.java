@@ -1,11 +1,11 @@
 package com.test.command;
 
-import com.syos.command.AssignDiscountCommand;
-import com.syos.enums.DiscountType;
-import com.syos.model.Discount;
-import com.syos.model.Product;
-import com.syos.repository.DiscountRepository;
-import com.syos.repository.ProductRepository;
+import com.syos.application.command.AssignDiscountCommand;
+import com.syos.domain.enums.DiscountType;
+import com.syos.domain.model.Discount;
+import com.syos.domain.model.Product;
+import com.syos.infrastructure.repository.DiscountRepository;
+import com.syos.infrastructure.repository.ProductRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

@@ -1,8 +1,8 @@
 package com.test.command;
 
-import com.syos.command.UpdateProductCommand;
-import com.syos.model.Product;
-import com.syos.service.ProductService;
+import com.syos.application.command.UpdateProductCommand;
+import com.syos.domain.model.Product;
+import com.syos.application.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

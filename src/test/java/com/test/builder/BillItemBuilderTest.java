@@ -1,8 +1,8 @@
 package com.test.builder;
 
-import com.syos.model.BillItem;
-import com.syos.model.Product;
-import com.syos.strategy.PricingStrategy;
+import com.syos.domain.model.BillItem;
+import com.syos.domain.model.Product;
+import com.syos.application.strategy.PricingStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

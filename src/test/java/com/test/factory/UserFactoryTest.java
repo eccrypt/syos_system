@@ -1,10 +1,10 @@
 package com.test.factory;
 
-import com.syos.dto.CustomerRegisterRequestDTO;
-import com.syos.enums.UserType;
-import com.syos.factory.UserFactory;
-import com.syos.model.Customer;
-import com.syos.model.User;
+import com.syos.application.dto.CustomerRegisterRequestDTO;
+import com.syos.domain.enums.UserType;
+import com.syos.application.factory.UserFactory;
+import com.syos.domain.model.Customer;
+import com.syos.domain.model.User;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

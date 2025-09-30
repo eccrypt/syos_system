@@ -7,8 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.syos.model.Bill;
-import com.syos.model.BillItem;
+import com.syos.domain.model.Bill;
+import com.syos.domain.model.BillItem;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
 package com.test.command;
 
-import com.syos.command.DiscardExpiringBatchesCommand;
-import com.syos.model.StockBatch;
-import com.syos.singleton.InventoryManager;
+import com.syos.application.command.DiscardExpiringBatchesCommand;
+import com.syos.domain.model.StockBatch;
+import com.syos.infrastructure.singleton.InventoryManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

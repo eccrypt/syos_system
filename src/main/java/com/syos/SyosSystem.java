@@ -2,19 +2,19 @@ package com.syos;
 
 import java.util.Scanner;
 
-import com.syos.repository.ProductRepository;
-import com.syos.repository.ProductRepositoryImpl;
-import com.syos.repository.ShelfStockRepository;
-import com.syos.repository.ShelfStockRepositoryImpl;
-import com.syos.repository.StockBatchRepository;
-import com.syos.repository.StockBatchRepositoryImpl;
-import com.syos.service.InventoryService;
-import com.syos.service.OnlineStoreService;
-import com.syos.service.ReportService;
-import com.syos.service.StoreBillingService;
-import com.syos.singleton.InventoryManager;
-import com.syos.strategy.ExpiryAwareFifoStrategy;
-import com.syos.strategy.ShelfStrategy;
+import com.syos.infrastructure.repository.ProductRepository;
+import com.syos.infrastructure.repository.ProductRepositoryImpl;
+import com.syos.infrastructure.repository.ShelfStockRepository;
+import com.syos.infrastructure.repository.ShelfStockRepositoryImpl;
+import com.syos.infrastructure.repository.StockBatchRepository;
+import com.syos.infrastructure.repository.StockBatchRepositoryImpl;
+import com.syos.application.service.InventoryService;
+import com.syos.application.service.OnlineStoreService;
+import com.syos.application.service.ReportService;
+import com.syos.application.service.StoreBillingService;
+import com.syos.infrastructure.singleton.InventoryManager;
+import com.syos.application.strategy.ExpiryAwareFifoStrategy;
+import com.syos.application.strategy.ShelfStrategy;
 
 public class SyosSystem {
 	public static void main(String[] args) {

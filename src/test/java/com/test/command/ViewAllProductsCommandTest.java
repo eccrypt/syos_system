@@ -1,8 +1,8 @@
 package com.test.command;
 
-import com.syos.command.ViewAllProductsCommand;
-import com.syos.model.Product;
-import com.syos.repository.ProductRepository;
+import com.syos.application.command.ViewAllProductsCommand;
+import com.syos.domain.model.Product;
+import com.syos.infrastructure.repository.ProductRepository;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

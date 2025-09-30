@@ -1,13 +1,13 @@
 package com.test.singleton;
 
-import com.syos.model.Discount;
-import com.syos.model.Product;
-import com.syos.repository.DiscountRepository;
-import com.syos.singleton.InventoryManager;
-import com.syos.strategy.DiscountPricingStrategy;
-import com.syos.strategy.PricingStrategy;
-import com.syos.strategy.ShelfStrategy;
-import com.syos.util.CommonVariables;
+import com.syos.domain.model.Discount;
+import com.syos.domain.model.Product;
+import com.syos.infrastructure.repository.DiscountRepository;
+import com.syos.infrastructure.singleton.InventoryManager;
+import com.syos.application.strategy.DiscountPricingStrategy;
+import com.syos.application.strategy.PricingStrategy;
+import com.syos.application.strategy.ShelfStrategy;
+import com.syos.infrastructure.util.CommonVariables;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -115,7 +115,7 @@ class DiscountPricingStrategyTest {
 		int quantity = 1;
 		double basePrice = 100.00;
 
-		Discount percentDiscount = new Discount(1, "KEYBOARD_10", com.syos.enums.DiscountType.PERCENT, 10.0,
+		Discount percentDiscount = new Discount(1, "KEYBOARD_10", com.syos.domain.enums.DiscountType.PERCENT, 10.0,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
 
 		when(mockBasePriceStrategy.calculate(product, quantity)).thenReturn(basePrice);
@@ -140,9 +140,9 @@ class DiscountPricingStrategyTest {
 		int quantity = 1;
 		double basePrice = 200.00;
 
-		Discount discount10Percent = new Discount(2, "MONITOR_10", com.syos.enums.DiscountType.PERCENT, 10.0,
+		Discount discount10Percent = new Discount(2, "MONITOR_10", com.syos.domain.enums.DiscountType.PERCENT, 10.0,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
-		Discount discount5Percent = new Discount(3, "MONITOR_5", com.syos.enums.DiscountType.PERCENT, 5.0,
+		Discount discount5Percent = new Discount(3, "MONITOR_5", com.syos.domain.enums.DiscountType.PERCENT, 5.0,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
 
 		when(mockBasePriceStrategy.calculate(product, quantity)).thenReturn(basePrice);
@@ -164,7 +164,7 @@ class DiscountPricingStrategyTest {
 		int quantity = 1;
 		double basePrice = 300.00;
 
-		Discount amountDiscount = new Discount(4, "PRINTER_FIXED", com.syos.enums.DiscountType.AMOUNT, 20.0,
+		Discount amountDiscount = new Discount(4, "PRINTER_FIXED", com.syos.domain.enums.DiscountType.AMOUNT, 20.0,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
 
 		when(mockBasePriceStrategy.calculate(product, quantity)).thenReturn(basePrice);
@@ -185,9 +185,9 @@ class DiscountPricingStrategyTest {
 		int quantity = 1;
 		double basePrice = 50.00;
 
-		Discount percentDiscount = new Discount(5, "WEBCAM_10", com.syos.enums.DiscountType.PERCENT, 10.0,
+		Discount percentDiscount = new Discount(5, "WEBCAM_10", com.syos.domain.enums.DiscountType.PERCENT, 10.0,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
-		Discount amountDiscount = new Discount(6, "WEBCAM_FIXED", com.syos.enums.DiscountType.AMOUNT, 6.0,
+		Discount amountDiscount = new Discount(6, "WEBCAM_FIXED", com.syos.domain.enums.DiscountType.AMOUNT, 6.0,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
 
 		when(mockBasePriceStrategy.calculate(product, quantity)).thenReturn(basePrice);
@@ -211,7 +211,7 @@ class DiscountPricingStrategyTest {
 		double originalMinTotalPrice = CommonVariables.MIN_TOTAL_PRICE;
 		CommonVariables.MIN_TOTAL_PRICE = 1.0;
 
-		Discount largeDiscount = new Discount(7, "CHEAP_ITEM_DISCOUNT", com.syos.enums.DiscountType.AMOUNT, 4.50,
+		Discount largeDiscount = new Discount(7, "CHEAP_ITEM_DISCOUNT", com.syos.domain.enums.DiscountType.AMOUNT, 4.50,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
 
 		when(mockBasePriceStrategy.calculate(product, quantity)).thenReturn(basePrice);
@@ -233,7 +233,7 @@ class DiscountPricingStrategyTest {
 		int quantity = 2;
 		double basePrice = 500.00;
 
-		Discount percentDiscount = new Discount(8, "TABLET_15", com.syos.enums.DiscountType.PERCENT, 15.0,
+		Discount percentDiscount = new Discount(8, "TABLET_15", com.syos.domain.enums.DiscountType.PERCENT, 15.0,
 				LocalDate.of(2025, 6, 7), LocalDate.of(2025, 6, 9));
 
 		when(mockBasePriceStrategy.calculate(product, quantity)).thenReturn(basePrice);

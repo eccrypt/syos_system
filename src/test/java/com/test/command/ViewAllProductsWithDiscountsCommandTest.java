@@ -1,11 +1,11 @@
 package com.test.command;
 
-import com.syos.command.ViewAllProductsWithDiscountsCommand;
-import com.syos.model.Product;
-import com.syos.model.Discount;
-import com.syos.repository.DiscountRepository;
-import com.syos.repository.ProductRepository;
-import com.syos.enums.DiscountType;
+import com.syos.application.command.ViewAllProductsWithDiscountsCommand;
+import com.syos.domain.model.Product;
+import com.syos.domain.model.Discount;
+import com.syos.infrastructure.repository.DiscountRepository;
+import com.syos.infrastructure.repository.ProductRepository;
+import com.syos.domain.enums.DiscountType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
