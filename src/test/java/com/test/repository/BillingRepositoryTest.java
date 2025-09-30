@@ -5,6 +5,7 @@ import com.syos.model.Bill;
 import com.syos.model.BillItem;
 import com.syos.model.Product;
 import com.syos.repository.BillingRepository;
+import com.syos.repository.BillingRepositoryImpl;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +46,7 @@ class BillingRepositoryTest {
 		when(DatabaseManager.getInstance()).thenReturn(mockDatabaseManager);
 		when(mockDatabaseManager.getConnection()).thenReturn(mockConnection);
 
-		billingRepository = new BillingRepository();
+		billingRepository = new BillingRepositoryImpl();
 
 		when(mockConnection.prepareStatement(anyString())).thenReturn(mockPsBill, mockPsItem);
 

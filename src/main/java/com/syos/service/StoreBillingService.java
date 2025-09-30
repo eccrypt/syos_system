@@ -10,8 +10,11 @@ import com.syos.model.BillItem;
 import com.syos.model.Product;
 import com.syos.model.ShelfStock;
 import com.syos.repository.BillingRepository;
+import com.syos.repository.BillingRepositoryImpl;
 import com.syos.repository.ProductRepository;
+import com.syos.repository.ProductRepositoryImpl;
 import com.syos.repository.ShelfStockRepository;
+import com.syos.repository.ShelfStockRepositoryImpl;
 import com.syos.singleton.InventoryManager;
 import com.syos.strategy.DiscountPricingStrategy;
 import com.syos.strategy.ExpiryAwareFifoStrategy;
@@ -19,9 +22,9 @@ import com.syos.strategy.NoDiscountStrategy;
 import com.syos.util.CommonVariables;
 
 public class StoreBillingService {
-	private final ProductRepository productReposiotry = new ProductRepository();
-	private ShelfStockRepository shelfStockRepository = new ShelfStockRepository(productReposiotry);
-	private final BillingRepository billRepository = new BillingRepository();
+	private final ProductRepository productReposiotry = new ProductRepositoryImpl();
+	private ShelfStockRepository shelfStockRepository = new ShelfStockRepositoryImpl(productReposiotry);
+	private final BillingRepository billRepository = new BillingRepositoryImpl();
 	private final BillItemFactory billItemFactory = new BillItemFactory(
 			new DiscountPricingStrategy(new NoDiscountStrategy()));
 	private final Scanner inputScanner = new Scanner(System.in);

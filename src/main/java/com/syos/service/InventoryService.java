@@ -23,7 +23,11 @@ import com.syos.command.ViewAllProductsWithDiscountsCommand;
 import com.syos.command.ViewAllDiscountsCommand;
 
 import com.syos.repository.DiscountRepository;
+import com.syos.repository.DiscountRepositoryImpl;
 import com.syos.repository.ProductRepository;
+import com.syos.repository.ProductRepositoryImpl;
+import com.syos.service.ProductService;
+import com.syos.service.ProductServiceImpl;
 
 import com.syos.singleton.InventoryManager;
 
@@ -36,14 +40,14 @@ public class InventoryService {
 	private final Map<String, Command> commandMap = new HashMap<>();
 
 	public InventoryService() {
-		ProductRepository productRepository = new ProductRepository();
-		DiscountRepository discountRepository = new DiscountRepository();
+		ProductRepository productRepository = new ProductRepositoryImpl();
+		DiscountRepository discountRepository = new DiscountRepositoryImpl();
 
 		this.inventoryManager = InventoryManager.getInstance(new ExpiryAwareFifoStrategy());
 
 		inventoryManager.addObserver(new StockAlertService(CommonVariables.STOCK_ALERT_THRESHOLD));
 
-		ProductService productService = new ProductService();
+		ProductService productService = new ProductServiceImpl(productRepository);
 
 		commandMap.put("1", new AddProductCommand(productService, scanner, productRepository));
 		commandMap.put("2", new ViewAllProductsCommand(productRepository, scanner));

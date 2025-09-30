@@ -3,6 +3,7 @@ package com.syos.service;
 import com.syos.dto.CustomerRegisterRequestDTO;
 import com.syos.model.Customer;
 import com.syos.repository.CustomerRepository;
+import com.syos.repository.CustomerRepositoryImpl;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class CustomerRegistrationService {
@@ -10,7 +11,7 @@ public class CustomerRegistrationService {
 	private final CustomerRepository customerRepository;
 
 	public CustomerRegistrationService() {
-		this.customerRepository = new CustomerRepository();
+		this.customerRepository = new CustomerRepositoryImpl();
 	}
 
 	public Customer register(CustomerRegisterRequestDTO request) throws Exception {

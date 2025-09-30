@@ -8,14 +8,16 @@ import com.syos.enums.UserType;
 import com.syos.model.Customer;
 import com.syos.model.Product;
 import com.syos.repository.CustomerRepository;
+import com.syos.repository.CustomerRepositoryImpl;
 import com.syos.repository.ProductRepository;
+import com.syos.repository.ProductRepositoryImpl;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class OnlineStoreService {
 	private final Scanner scanner = new Scanner(System.in);
 	private final CustomerRegistrationService registrationService = new CustomerRegistrationService();
-	private final CustomerRepository customerRepository = new CustomerRepository();
-	private final ProductRepository productRepository = new ProductRepository();
+	private final CustomerRepository customerRepository = new CustomerRepositoryImpl();
+	private final ProductRepository productRepository = new ProductRepositoryImpl();
 
 	public void run() {
 		System.out.println("=== Welcome to SYOS Online Store ===");
@@ -30,13 +32,18 @@ public class OnlineStoreService {
 			String choice = scanner.nextLine().trim();
 
 			switch (choice) {
-			case "1" -> customer = login();
-			case "2" -> customer = register();
-			case "3" -> {
+			case "1":
+				customer = login();
+				break;
+			case "2":
+				customer = register();
+				break;
+			case "3":
 				System.out.println("Exited!");
 				return;
-			}
-			default -> System.out.println("Invalid option. Try again.");
+			default:
+				System.out.println("Invalid option. Try again.");
+				break;
 			}
 		}
 
@@ -49,13 +56,18 @@ public class OnlineStoreService {
 			String choice = scanner.nextLine().trim();
 
 			switch (choice) {
-			case "1" -> browseProducts();
-			case "2" -> searchProduct();
-			case "3" -> {
+			case "1":
+				browseProducts();
+				break;
+			case "2":
+				searchProduct();
+				break;
+			case "3":
 				System.out.println("Goodbye, " + customer.getFirstName() + "!");
 				return;
-			}
-			default -> System.out.println("Invalid option. Please choose 1, 2 or 3.");
+			default:
+				System.out.println("Invalid option. Please choose 1, 2 or 3.");
+				break;
 			}
 		}
 	}

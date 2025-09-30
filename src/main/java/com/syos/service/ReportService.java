@@ -45,15 +45,24 @@ public class ReportService {
 			String choice = scanner.nextLine();
 
 			switch (choice) {
-			case "1" -> generateDailySalesReport();
-			case "2" -> generateAllTransactionsReport();
-			case "3" -> generateProductStockReport();
-			case "4" -> generateShelfAndInventoryAnalysisReport();
-			case "5" -> {
+			case "1":
+				generateDailySalesReport();
+				break;
+			case "2":
+				generateAllTransactionsReport();
+				break;
+			case "3":
+				generateProductStockReport();
+				break;
+			case "4":
+				generateShelfAndInventoryAnalysisReport();
+				break;
+			case "5":
 				System.out.println("Exiting report menu.");
 				return;
-			}
-			default -> System.out.println("Invalid option.");
+			default:
+				System.out.println("Invalid option.");
+				break;
 			}
 		}
 	}

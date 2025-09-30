@@ -2,16 +2,21 @@ package com.syos.model;
 
 public class Product {
 
-	private String code;
-	private String name;
-	private double price;
+	private final String code;
+	private final String name;
+	private final double price;
 
+	private Product(ProductBuilder builder) {
+		this.code = builder.code;
+		this.name = builder.name;
+		this.price = builder.price;
+	}
+
+	// Constructor for backward compatibility
 	public Product(String code, String name, double price) {
-		super();
 		this.code = code;
 		this.name = name;
 		this.price = price;
-
 	}
 
 	public String getCode() {
@@ -26,16 +31,28 @@ public class Product {
 		return price;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+	public static class ProductBuilder {
+		private String code;
+		private String name;
+		private double price;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+		public ProductBuilder code(String code) {
+			this.code = code;
+			return this;
+		}
 
-	public void setPrice(double price) {
-		this.price = price;
-	}
+		public ProductBuilder name(String name) {
+			this.name = name;
+			return this;
+		}
 
+		public ProductBuilder price(double price) {
+			this.price = price;
+			return this;
+		}
+
+		public Product build() {
+			return new Product(this);
+		}
+	}
 }

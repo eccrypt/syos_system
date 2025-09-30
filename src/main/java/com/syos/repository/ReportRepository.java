@@ -33,11 +33,7 @@ public class ReportRepository {
 	}
 
 	public double getTotalRevenue(LocalDate date) {
-		String sql = """
-				SELECT SUM(total_amount)
-				FROM bill
-				WHERE DATE(bill_date) = ?
-				""";
+		String sql = "SELECT SUM(total_amount) FROM bill WHERE DATE(bill_date) = ?";
 		try (Connection connection = DatabaseManager.getInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
@@ -54,12 +50,7 @@ public class ReportRepository {
 	}
 
 	public List<Bill> getBillsByDate(LocalDate date) {
-		String sql = """
-				SELECT id, serial_number, bill_date, total_amount, cash_tendered, change_returned, transaction_type
-				FROM bill
-				WHERE DATE(bill_date) = ?
-				ORDER BY serial_number ASC
-				""";
+		String sql = "SELECT id, serial_number, bill_date, total_amount, cash_tendered, change_returned, transaction_type FROM bill WHERE DATE(bill_date) = ? ORDER BY serial_number ASC";
 		List<Bill> bills = new ArrayList<>();
 		try (Connection connection = DatabaseManager.getInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -81,12 +72,7 @@ public class ReportRepository {
 	}
 
 	public List<BillItem> getBillItemsByBillId(int billId) {
-		String sql = """
-				SELECT id, bill_id, product_code, quantity, total_price, discount_amount
-				FROM bill_item  -- CHANGED from 'bill_items' to 'bill_item'
-				WHERE bill_id = ?
-				ORDER BY id ASC
-				""";
+		String sql = "SELECT id, bill_id, product_code, quantity, total_price, discount_amount FROM bill_item WHERE bill_id = ? ORDER BY id ASC";
 		List<BillItem> items = new ArrayList<>();
 		try (Connection connection = DatabaseManager.getInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -115,11 +101,7 @@ public class ReportRepository {
 	}
 
 	public List<Bill> getAllBills() {
-		String sql = """
-					SELECT id, serial_number, bill_date, total_amount, cash_tendered, change_returned, transaction_type
-					FROM bill
-					ORDER BY bill_date DESC
-				""";
+		String sql = "SELECT id, serial_number, bill_date, total_amount, cash_tendered, change_returned, transaction_type FROM bill ORDER BY bill_date DESC";
 		List<Bill> bills = new ArrayList<>();
 		try (Connection connection = DatabaseManager.getInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql);

@@ -9,8 +9,11 @@ import com.syos.model.StockBatch;
 import com.syos.model.ShelfStock;
 import com.syos.observer.StockObserver;
 import com.syos.repository.ShelfStockRepository;
+import com.syos.repository.ShelfStockRepositoryImpl;
 import com.syos.repository.StockBatchRepository;
 import com.syos.repository.ProductRepository;
+import com.syos.repository.ProductRepositoryImpl;
+import com.syos.repository.StockBatchRepositoryImpl;
 import com.syos.strategy.ShelfStrategy;
 import com.syos.util.CommonVariables;
 
@@ -32,8 +35,8 @@ public class InventoryManager {
 
 	public static synchronized InventoryManager getInstance(ShelfStrategy strat) {
 		if (instance == null) {
-			ProductRepository productRepo = new ProductRepository();
-			instance = new InventoryManager(strat, new StockBatchRepository(), new ShelfStockRepository(productRepo),
+			ProductRepository productRepo = new ProductRepositoryImpl();
+			instance = new InventoryManager(strat, new StockBatchRepositoryImpl(), new ShelfStockRepositoryImpl(productRepo),
 					productRepo);
 		}
 		return instance;

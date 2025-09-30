@@ -3,17 +3,14 @@ package com.test.service;
 import com.syos.model.Product;
 import com.syos.repository.ProductRepository;
 import com.syos.service.ProductService;
+import com.syos.service.ProductServiceImpl;
 import com.syos.util.CommonVariables;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,24 +22,11 @@ public class ProductServiceTest {
     @Mock
     private ProductRepository productRepository; // Mock the dependency
 
-    @InjectMocks
-    private ProductService productService; // Inject mocks into ProductService
-
-    private MockedConstruction<ProductRepository> mockedProductRepositoryConstruction;
+    private ProductService productService; // Use ProductServiceImpl
 
     @BeforeEach
     void setUp() {
-        mockedProductRepositoryConstruction = mockConstruction(ProductRepository.class, (mock, context) -> {
-            productRepository = mock;
-        });
-        productService = new ProductService();
-    }
-
-    @AfterEach
-    void tearDown() {
-        if (mockedProductRepositoryConstruction != null) {
-            mockedProductRepositoryConstruction.close();
-        }
+        productService = new ProductServiceImpl(productRepository);
     }
 
     // --- Tests for addProduct method ---

@@ -3,8 +3,13 @@ package com.syos;
 import java.util.Scanner;
 
 import com.syos.repository.ProductRepository;
+import com.syos.repository.ProductRepositoryImpl;
 import com.syos.repository.ShelfStockRepository;
+import com.syos.repository.ShelfStockRepositoryImpl;
 import com.syos.repository.StockBatchRepository;
+import com.syos.repository.StockBatchRepositoryImpl;
+import com.syos.service.ProductService;
+import com.syos.service.ProductServiceImpl;
 import com.syos.service.InventoryService;
 import com.syos.service.OnlineStoreService;
 import com.syos.service.ReportService;
@@ -19,9 +24,10 @@ public class SyosSystem {
 		ShelfStrategy strategy = new ExpiryAwareFifoStrategy();
 		InventoryManager.getInstance(strategy);
 		Scanner scanner = new Scanner(System.in);
-		ProductRepository productRepository = new ProductRepository();
-		ShelfStockRepository shelfStockRepository = new ShelfStockRepository(productRepository);
-		StockBatchRepository stockBatchRepository = new StockBatchRepository();
+		ProductRepository productRepository = new ProductRepositoryImpl();
+		ShelfStockRepository shelfStockRepository = new ShelfStockRepositoryImpl(productRepository);
+		StockBatchRepository stockBatchRepository = new StockBatchRepositoryImpl();
+		ProductService productService = new ProductServiceImpl(productRepository);
 		StoreBillingService billingService = new StoreBillingService();
 		InventoryService inventoryService = new InventoryService();
 		OnlineStoreService onlineStoreService = new OnlineStoreService();
@@ -41,16 +47,25 @@ public class SyosSystem {
 			String choice = scanner.nextLine().trim();
 
 			switch (choice) {
-			case "1" -> billingService.run();
-			case "2" -> onlineStoreService.run();
-			case "3" -> inventoryService.run();
-			case "4" -> reportService.run();
-			case "5" -> {
+			case "1":
+				billingService.run();
+				break;
+			case "2":
+				onlineStoreService.run();
+				break;
+			case "3":
+				inventoryService.run();
+				break;
+			case "4":
+				reportService.run();
+				break;
+			case "5":
 				System.out.println("Goodbye!");
 				scanner.close();
 				return;
-			}
-			default -> System.out.println("Invalid selection.");
+			default:
+				System.out.println("Invalid selection.");
+				break;
 			}
 		}
 	}

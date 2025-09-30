@@ -6,12 +6,13 @@ import java.util.List;
 import com.syos.model.Discount;
 import com.syos.model.Product;
 import com.syos.repository.DiscountRepository;
+import com.syos.repository.DiscountRepositoryImpl;
 import com.syos.singleton.InventoryManager;
 import com.syos.util.CommonVariables;
 
 public class DiscountPricingStrategy implements PricingStrategy {
 	private final PricingStrategy basePriceStrategy;
-	private final DiscountRepository discountRepository = new DiscountRepository();
+	private final DiscountRepository discountRepository = new DiscountRepositoryImpl();
 	private final InventoryManager inventoryManager = InventoryManager.getInstance(null);
 
 	public DiscountPricingStrategy(PricingStrategy basePriceStrategy) {
