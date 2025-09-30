@@ -8,8 +8,6 @@ import com.syos.repository.ShelfStockRepository;
 import com.syos.repository.ShelfStockRepositoryImpl;
 import com.syos.repository.StockBatchRepository;
 import com.syos.repository.StockBatchRepositoryImpl;
-import com.syos.service.ProductService;
-import com.syos.service.ProductServiceImpl;
 import com.syos.service.InventoryService;
 import com.syos.service.OnlineStoreService;
 import com.syos.service.ReportService;
@@ -27,7 +25,6 @@ public class SyosSystem {
 		ProductRepository productRepository = new ProductRepositoryImpl();
 		ShelfStockRepository shelfStockRepository = new ShelfStockRepositoryImpl(productRepository);
 		StockBatchRepository stockBatchRepository = new StockBatchRepositoryImpl();
-		ProductService productService = new ProductServiceImpl(productRepository);
 		StoreBillingService billingService = new StoreBillingService();
 		InventoryService inventoryService = new InventoryService();
 		OnlineStoreService onlineStoreService = new OnlineStoreService();

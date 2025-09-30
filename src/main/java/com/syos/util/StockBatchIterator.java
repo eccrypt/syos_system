@@ -9,11 +9,6 @@ import com.syos.model.StockBatch;
 
 public class StockBatchIterator implements Iterator<StockBatch> {
 	private final PriorityQueue<StockBatch> queue;
-
-	/**
-	 * @param batches    the list of batches to iterate (won't be modified)
-	 * @param comparator defines the iteration order
-	 */
 	public StockBatchIterator(List<StockBatch> batches, Comparator<StockBatch> comparator) {
 		this.queue = new PriorityQueue<>(comparator);
 		this.queue.addAll(batches);
