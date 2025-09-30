@@ -69,6 +69,7 @@ com\syos\application\factory\BillItemFactory.class
 com\syos\application\command\ReceiveStockCommand.class
 com\syos\application\service\CustomerRegistrationService.class
 com\syos\domain\model\Discount.class
+com\syos\application\factory\UserFactory.class
 com\syos\domain\model\Customer$CustomerBuilder.class
 com\syos\domain\model\StockBatch.class
 com\syos\application\dto\ProductStockReportItemDTO.class
