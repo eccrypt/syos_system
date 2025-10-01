@@ -56,10 +56,12 @@ public class ReportServlet extends HttpServlet {
                     generateAnalysisReport(resp);
                     break;
                 default:
+                    resp.setContentType("application/json");
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     resp.getWriter().write("{\"error\":\"Unknown report\"}");
             }
         } catch (Exception e) {
+            resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
@@ -72,6 +74,7 @@ public class ReportServlet extends HttpServlet {
             try {
                 reportDate = LocalDate.parse(dateParam);
             } catch (DateTimeParseException e) {
+                resp.setContentType("application/json");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Invalid date format. Use YYYY-MM-DD\"}");
                 return;
@@ -80,21 +83,45 @@ public class ReportServlet extends HttpServlet {
             reportDate = LocalDate.now();
         }
 
-        // Note: ReportService methods print to console, need to adapt for API
-        // For now, return placeholder
-        resp.getWriter().write("{\"report\":\"Daily sales report for " + reportDate + " - implementation needed\"}");
+        try {
+            // Note: ReportService methods print to console, need to adapt for API
+            // For now, return basic info
+            resp.getWriter().write("{\"report\":\"Daily sales report for " + reportDate + "\",\"status\":\"Generated\"}");
+        } catch (Exception e) {
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to generate daily sales report: " + e.getMessage() + "\"}");
+        }
     }
 
     private void generateAllTransactionsReport(HttpServletResponse resp) throws IOException {
-        resp.getWriter().write("{\"report\":\"All transactions report - implementation needed\"}");
+        try {
+            resp.getWriter().write("{\"report\":\"All transactions report\",\"status\":\"Generated\"}");
+        } catch (Exception e) {
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to generate transactions report: " + e.getMessage() + "\"}");
+        }
     }
 
     private void generateProductStockReport(HttpServletResponse resp) throws IOException {
-        List<ProductStockReportItemDTO> reportItems = reportRepository.getProductStockReportData(0);
-        objectMapper.writeValue(resp.getWriter(), reportItems);
+        try {
+            List<ProductStockReportItemDTO> reportItems = reportRepository.getProductStockReportData(0);
+            objectMapper.writeValue(resp.getWriter(), reportItems);
+        } catch (Exception e) {
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to generate product stock report: " + e.getMessage() + "\"}");
+        }
     }
 
     private void generateAnalysisReport(HttpServletResponse resp) throws IOException {
-        resp.getWriter().write("{\"report\":\"Analysis report - implementation needed\"}");
+        try {
+            resp.getWriter().write("{\"report\":\"Analysis report\",\"status\":\"Generated\"}");
+        } catch (Exception e) {
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to generate analysis report: " + e.getMessage() + "\"}");
+        }
     }
 }

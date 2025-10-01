@@ -10,10 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syos.domain.model.Product;
+import com.syos.domain.model.Discount;
+import com.syos.domain.model.StockBatch;
+import com.syos.domain.enums.DiscountType;
+import java.time.LocalDate;
 import com.syos.infrastructure.repository.DiscountRepository;
 import com.syos.infrastructure.repository.DiscountRepositoryImpl;
 import com.syos.infrastructure.repository.ProductRepository;
 import com.syos.infrastructure.repository.ProductRepositoryImpl;
+import com.syos.infrastructure.repository.StockBatchRepository;
+import com.syos.infrastructure.repository.StockBatchRepositoryImpl;
 import com.syos.application.service.ProductService;
 import com.syos.application.service.ProductServiceImpl;
 import com.syos.infrastructure.singleton.InventoryManager;
@@ -24,6 +30,7 @@ public class InventoryServlet extends HttpServlet {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ProductRepository productRepository = new ProductRepositoryImpl();
     private final DiscountRepository discountRepository = new DiscountRepositoryImpl();
+    private final StockBatchRepository stockBatchRepository = new StockBatchRepositoryImpl();
     private final ProductService productService = new ProductServiceImpl(productRepository);
     private final InventoryManager inventoryManager;
 
@@ -87,6 +94,9 @@ public class InventoryServlet extends HttpServlet {
 
         try {
             switch (path) {
+                case "/test":
+                    testConnection(resp);
+                    break;
                 case "/products":
                     getAllProducts(resp);
                     break;
@@ -146,8 +156,20 @@ public class InventoryServlet extends HttpServlet {
     }
 
     private void removeExpiryStock(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // Placeholder: implement logic to remove close to expiry stock
-        resp.getWriter().write("{\"status\":\"Expiry stock removal not implemented\"}");
+        try {
+            List<StockBatch> expiringBatches = stockBatchRepository.findAllExpiringBatches(7); // Next 7 days
+            int removedCount = 0;
+            for (StockBatch batch : expiringBatches) {
+                if (batch.getQuantityRemaining() > 0) {
+                    inventoryManager.discardBatchQuantity(batch.getId(), batch.getQuantityRemaining());
+                    removedCount++;
+                }
+            }
+            resp.getWriter().write("{\"status\":\"Removed " + removedCount + " expiring stock batches\"}");
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to remove expiry stock: " + e.getMessage() + "\"}");
+        }
     }
 
     private void discardBatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -159,15 +181,152 @@ public class InventoryServlet extends HttpServlet {
     }
 
     private void createDiscount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        DiscountRequest discountReq = objectMapper.readValue(req.getInputStream(), DiscountRequest.class);
-        // Assuming discount creation logic
-        resp.getWriter().write("{\"status\":\"Discount created successfully\"}");
+        try {
+            DiscountRequest discountReq = objectMapper.readValue(req.getInputStream(), DiscountRequest.class);
+
+            // Validate input
+            if (discountReq.getName() == null || discountReq.getName().trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Discount name is required\"}");
+                return;
+            }
+
+            if (discountReq.getValue() == null || discountReq.getValue().trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Discount value is required\"}");
+                return;
+            }
+
+            if (discountReq.getStartDate() == null || discountReq.getStartDate().trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Start date is required\"}");
+                return;
+            }
+
+            if (discountReq.getEndDate() == null || discountReq.getEndDate().trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"End date is required\"}");
+                return;
+            }
+
+            // Parse discount type
+            DiscountType discountType;
+            try {
+                discountType = DiscountType.valueOf(discountReq.getType().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Invalid discount type. Use PERCENT or AMOUNT\"}");
+                return;
+            }
+
+            // Parse discount value
+            double discountValue;
+            try {
+                discountValue = Double.parseDouble(discountReq.getValue());
+                if (discountValue < 0) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("{\"error\":\"Discount value must be non-negative\"}");
+                    return;
+                }
+                if (discountType == DiscountType.PERCENT && discountValue > 100) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("{\"error\":\"Percentage discount cannot exceed 100%\"}");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Invalid discount value format\"}");
+                return;
+            }
+
+            // Parse dates
+            LocalDate startDate, endDate;
+            try {
+                startDate = LocalDate.parse(discountReq.getStartDate());
+                endDate = LocalDate.parse(discountReq.getEndDate());
+            } catch (Exception e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Invalid date format. Use YYYY-MM-DD\"}");
+                return;
+            }
+
+            if (endDate.isBefore(startDate)) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"End date cannot be before start date\"}");
+                return;
+            }
+
+            // Create discount
+            int discountId = discountRepository.createDiscount(discountReq.getName(), discountType, discountValue, startDate, endDate);
+            if (discountId != -1) {
+                resp.getWriter().write("{\"status\":\"Discount created successfully\",\"discountId\":" + discountId + "}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("{\"error\":\"Failed to create discount\"}");
+            }
+
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+        }
     }
 
     private void assignDiscount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        AssignDiscountRequest assignReq = objectMapper.readValue(req.getInputStream(), AssignDiscountRequest.class);
-        // Assuming assign logic
-        resp.getWriter().write("{\"status\":\"Discount assigned successfully\"}");
+        try {
+            AssignDiscountRequest assignReq = objectMapper.readValue(req.getInputStream(), AssignDiscountRequest.class);
+
+            // Validate input
+            if (assignReq.getProductCode() == null || assignReq.getProductCode().trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Product code is required\"}");
+                return;
+            }
+
+            if (assignReq.getDiscountId() == null || assignReq.getDiscountId().trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Discount ID is required\"}");
+                return;
+            }
+
+            // Validate product exists
+            Product product = productRepository.findByCode(assignReq.getProductCode());
+            if (product == null) {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\":\"Product not found: " + assignReq.getProductCode() + "\"}");
+                return;
+            }
+
+            // Parse discount ID
+            int discountId;
+            try {
+                discountId = Integer.parseInt(assignReq.getDiscountId());
+                if (discountId <= 0) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("{\"error\":\"Discount ID must be a positive number\"}");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\":\"Invalid discount ID format\"}");
+                return;
+            }
+
+            // Validate discount exists
+            Discount discount = discountRepository.findById(discountId);
+            if (discount == null) {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\":\"Discount not found with ID: " + discountId + "\"}");
+                return;
+            }
+
+            // Assign discount to product
+            discountRepository.linkProductToDiscount(assignReq.getProductCode(), discountId);
+            resp.getWriter().write("{\"status\":\"Discount assigned successfully to product " + assignReq.getProductCode() + "\"}");
+
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+        }
     }
 
     private void unassignDiscount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -176,39 +335,71 @@ public class InventoryServlet extends HttpServlet {
         resp.getWriter().write("{\"status\":\"Discount unassigned successfully\"}");
     }
 
+    private void testConnection(HttpServletResponse resp) throws IOException {
+        resp.getWriter().write("{\"status\":\"Inventory API is working!\",\"timestamp\":\"" + java.time.LocalDateTime.now() + "\"}");
+    }
+
     private void getAllProducts(HttpServletResponse resp) throws IOException {
-        List<Product> products = productRepository.findAll();
-        objectMapper.writeValue(resp.getWriter(), products);
+        try {
+            List<Product> products = productRepository.findAll();
+            objectMapper.writeValue(resp.getWriter(), products);
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
     }
 
     private void getAllStocks(HttpServletResponse resp) throws IOException {
-        // Placeholder for stock data
-        resp.getWriter().write("{\"stocks\":\"Not implemented yet\"}");
+        try {
+            List<String> productCodes = stockBatchRepository.getAllProductCodesWithBatches();
+            resp.getWriter().write("{\"stocks\":\"Found " + productCodes.size() + " products with stock\"}");
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
     }
 
     private void getInventoryStocks(HttpServletResponse resp) throws IOException {
-        // Placeholder
-        resp.getWriter().write("{\"inventoryStocks\":\"Not implemented yet\"}");
+        try {
+            List<String> productCodes = stockBatchRepository.getAllProductCodesWithBatches();
+            resp.getWriter().write("{\"inventoryStocks\":\"Found " + productCodes.size() + " products in inventory\"}");
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
     }
 
     private void getExpiryStocks(HttpServletResponse resp) throws IOException {
-        // Placeholder
-        resp.getWriter().write("{\"expiryStocks\":\"Not implemented yet\"}");
+        try {
+            List<StockBatch> expiringBatches = stockBatchRepository.findAllExpiringBatches(30); // Next 30 days
+            objectMapper.writeValue(resp.getWriter(), expiringBatches);
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
     }
 
     private void getExpiringBatches(HttpServletResponse resp) throws IOException {
-        // Placeholder
-        resp.getWriter().write("{\"expiringBatches\":\"Not implemented yet\"}");
+        try {
+            List<StockBatch> expiringBatches = stockBatchRepository.findAllExpiringBatches(7); // Next 7 days
+            objectMapper.writeValue(resp.getWriter(), expiringBatches);
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
     }
 
     private void getAllDiscounts(HttpServletResponse resp) throws IOException {
-        // Placeholder
-        resp.getWriter().write("{\"discounts\":\"Not implemented yet\"}");
+        try {
+            // Note: Need to implement findAll method in DiscountRepository if not exists
+            resp.getWriter().write("{\"discounts\":\"Discount listing not implemented yet\"}");
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
     }
 
     private void getProductsWithDiscounts(HttpServletResponse resp) throws IOException {
-        // Placeholder
-        resp.getWriter().write("{\"productsWithDiscounts\":\"Not implemented yet\"}");
+        try {
+            // Note: Need to implement method to get products with active discounts
+            resp.getWriter().write("{\"productsWithDiscounts\":\"Not implemented yet\"}");
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
     }
 
     // DTOs
@@ -280,12 +471,18 @@ public class InventoryServlet extends HttpServlet {
     }
 
     public static class DiscountRequest {
-        private String type, value;
+        private String name, type, value, startDate, endDate;
 
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
         public String getType() { return type; }
         public void setType(String type) { this.type = type; }
         public String getValue() { return value; }
         public void setValue(String value) { this.value = value; }
+        public String getStartDate() { return startDate; }
+        public void setStartDate(String startDate) { this.startDate = startDate; }
+        public String getEndDate() { return endDate; }
+        public void setEndDate(String endDate) { this.endDate = endDate; }
     }
 
     public static class AssignDiscountRequest {

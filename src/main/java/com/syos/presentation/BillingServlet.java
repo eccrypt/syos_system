@@ -43,13 +43,53 @@ public class BillingServlet extends HttpServlet {
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
+        resp.setContentType("application/json");
+
         switch (path) {
             case "/create":
                 createBill(req, resp);
                 break;
             default:
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\":\"Unknown endpoint\"}");
                 break;
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String path = req.getPathInfo();
+        if (path == null) path = "/";
+
+        resp.setContentType("application/json");
+
+        try {
+            switch (path) {
+                case "/test":
+                    testConnection(resp);
+                    break;
+                case "/bills":
+                    getAllBills(resp);
+                    break;
+                default:
+                    if (path.startsWith("/bills/")) {
+                        String serialStr = path.substring("/bills/".length());
+                        try {
+                            int serialNumber = Integer.parseInt(serialStr);
+                            getBillBySerial(serialNumber, resp);
+                        } catch (NumberFormatException e) {
+                            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            resp.getWriter().write("{\"error\":\"Invalid serial number format\"}");
+                        }
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                        resp.getWriter().write("{\"error\":\"Unknown endpoint\"}");
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
@@ -61,6 +101,7 @@ public class BillingServlet extends HttpServlet {
             for (BillItemRequest itemReq : billRequest.getItems()) {
                 Product product = validateProduct(itemReq.getProductCode());
                 if (product == null) {
+                    resp.setContentType("application/json");
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     resp.getWriter().write("{\"error\":\"Product not found: " + itemReq.getProductCode() + "\"}");
                     return;
@@ -68,6 +109,7 @@ public class BillingServlet extends HttpServlet {
 
                 int availableStock = inventoryManager.getAvailableStock(itemReq.getProductCode());
                 if (availableStock < itemReq.getQuantity()) {
+                    resp.setContentType("application/json");
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     resp.getWriter().write("{\"error\":\"Insufficient stock for " + itemReq.getProductCode() + "\"}");
                     return;
@@ -78,6 +120,7 @@ public class BillingServlet extends HttpServlet {
 
             double totalDue = billItems.stream().mapToDouble(BillItem::getTotalPrice).sum();
             if (billRequest.getCashTendered() < totalDue) {
+                resp.setContentType("application/json");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Cash tendered is less than total due\"}");
                 return;
@@ -94,6 +137,7 @@ public class BillingServlet extends HttpServlet {
             objectMapper.writeValue(resp.getWriter(), billResponse);
 
         } catch (Exception e) {
+            resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
@@ -109,6 +153,28 @@ public class BillingServlet extends HttpServlet {
     private void deductStock(List<BillItem> billItems) {
         for (BillItem item : billItems) {
             inventoryManager.deductFromShelf(item.getProduct().getCode(), item.getQuantity());
+        }
+    }
+
+    private void testConnection(HttpServletResponse resp) throws IOException {
+        resp.getWriter().write("{\"status\":\"Billing API is working!\",\"timestamp\":\"" + java.time.LocalDateTime.now() + "\"}");
+    }
+
+    private void getAllBills(HttpServletResponse resp) throws IOException {
+        try {
+            // Note: Need to implement findAll method in BillingRepository if not exists
+            resp.getWriter().write("{\"bills\":\"Bill listing not implemented yet\"}");
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private void getBillBySerial(int serialNumber, HttpServletResponse resp) throws IOException {
+        try {
+            // Note: Need to implement findBySerial method in BillingRepository if not exists
+            resp.getWriter().write("{\"bill\":\"Bill with serial " + serialNumber + " not found\"}");
+        } catch (Exception e) {
+            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
         }
     }
 
