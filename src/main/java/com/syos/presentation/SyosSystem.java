@@ -1,69 +1,40 @@
 package com.syos.presentation;
 
-import java.util.Scanner;
+import java.io.File;
 
-import com.syos.infrastructure.repository.ProductRepository;
-import com.syos.infrastructure.repository.ProductRepositoryImpl;
-import com.syos.infrastructure.repository.ShelfStockRepository;
-import com.syos.infrastructure.repository.ShelfStockRepositoryImpl;
-import com.syos.infrastructure.repository.StockBatchRepository;
-import com.syos.infrastructure.repository.StockBatchRepositoryImpl;
-import com.syos.application.service.InventoryService;
-import com.syos.application.service.OnlineStoreService;
-import com.syos.application.service.ReportService;
-import com.syos.application.service.StoreBillingService;
-import com.syos.infrastructure.singleton.InventoryManager;
-import com.syos.application.strategy.ExpiryAwareFifoStrategy;
-import com.syos.application.strategy.ShelfStrategy;
+import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.startup.Tomcat;
 
 public class SyosSystem {
-	public static void main(String[] args) {
+    public static void main(String[] args) throws LifecycleException {
+        Tomcat tomcat = new Tomcat();
+        tomcat.setPort(8080);
 
-		ShelfStrategy strategy = new ExpiryAwareFifoStrategy();
-		InventoryManager.getInstance(strategy);
-		Scanner scanner = new Scanner(System.in);
-		ProductRepository productRepository = new ProductRepositoryImpl();
-		ShelfStockRepository shelfStockRepository = new ShelfStockRepositoryImpl(productRepository);
-		StockBatchRepository stockBatchRepository = new StockBatchRepositoryImpl();
-		StoreBillingService billingService = new StoreBillingService();
-		InventoryService inventoryService = new InventoryService();
-		OnlineStoreService onlineStoreService = new OnlineStoreService();
+        // Create a temporary directory for Tomcat
+        File baseDir = new File(System.getProperty("java.io.tmpdir"));
+        File docBase = new File("src/main/webapp");
+        if (!docBase.exists()) {
+            docBase = new File("target/classes");
+        }
 
-		ReportService reportService = new ReportService(scanner, productRepository, shelfStockRepository,
-				stockBatchRepository);
+        Context context = tomcat.addContext("", docBase.getAbsolutePath());
 
-		while (true) {
-			System.out.println("\n=== SYOS Main Menu ===");
-			System.out.println(" 1) Store Billing");
-			System.out.println(" 2) Online Store");
-			System.out.println(" 3) Inventory");
-			System.out.println(" 4) Reports");
-			System.out.println(" 5) Exit");
+        // Add servlets programmatically
+        Tomcat.addServlet(context, "BillingServlet", new BillingServlet());
+        context.addServletMappingDecoded("/api/billing/*", "BillingServlet");
 
-			System.out.print("\n Select an option : ");
-			String choice = scanner.nextLine().trim();
+        Tomcat.addServlet(context, "InventoryServlet", new InventoryServlet());
+        context.addServletMappingDecoded("/api/inventory/*", "InventoryServlet");
 
-			switch (choice) {
-			case "1":
-				billingService.run();
-				break;
-			case "2":
-				onlineStoreService.run();
-				break;
-			case "3":
-				inventoryService.run();
-				break;
-			case "4":
-				reportService.run();
-				break;
-			case "5":
-				System.out.println("Goodbye!");
-				scanner.close();
-				return;
-			default:
-				System.out.println("Invalid selection.");
-				break;
-			}
-		}
-	}
+        Tomcat.addServlet(context, "OnlineStoreServlet", new OnlineStoreServlet());
+        context.addServletMappingDecoded("/api/store/*", "OnlineStoreServlet");
+
+        Tomcat.addServlet(context, "ReportServlet", new ReportServlet());
+        context.addServletMappingDecoded("/api/reports/*", "ReportServlet");
+
+        System.out.println("Starting SYOS System on http://localhost:8080");
+        tomcat.start();
+        tomcat.getServer().await();
+    }
 }
