@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.syos.application.dto.CustomerRegisterRequestDTO;
-import com.syos.domain.enums.UserType;
 import com.syos.domain.model.Customer;
 import com.syos.domain.model.Product;
 import com.syos.infrastructure.repository.CustomerRepository;

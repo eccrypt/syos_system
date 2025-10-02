@@ -14,6 +14,7 @@ d:\Projects\syos_system\src\main\java\com\syos\infrastructure\db\DatabaseManager
 d:\Projects\syos_system\src\main\java\com\syos\infrastructure\repository\CustomerRepository.java
 d:\Projects\syos_system\src\main\java\com\syos\presentation\SyosSystem.java
 d:\Projects\syos_system\src\main\java\com\syos\application\command\ViewAllDiscountsCommand.java
+d:\Projects\syos_system\src\main\java\com\syos\presentation\CheckoutServlet.java
 d:\Projects\syos_system\src\main\java\com\syos\domain\enums\TransactionType.java
 d:\Projects\syos_system\src\main\java\com\syos\domain\enums\UserType.java
 d:\Projects\syos_system\src\main\java\com\syos\application\command\CreateDiscountCommand.java
@@ -23,7 +24,9 @@ d:\Projects\syos_system\src\main\java\com\syos\application\service\RegistrationS
 d:\Projects\syos_system\src\main\java\com\syos\application\strategy\PricingStrategy.java
 d:\Projects\syos_system\src\main\java\com\syos\domain\model\ShelfStock.java
 d:\Projects\syos_system\src\main\java\com\syos\application\command\ViewAllProductsWithDiscountsCommand.java
+d:\Projects\syos_system\src\main\java\com\syos\presentation\ProductDisplayServlet.java
 d:\Projects\syos_system\src\main\java\com\syos\application\strategy\ShelfStrategy.java
+d:\Projects\syos_system\src\main\java\com\syos\presentation\ProductWebServlet.java
 d:\Projects\syos_system\src\main\java\com\syos\application\command\ViewAllInventoryStocksCommand.java
 d:\Projects\syos_system\src\main\java\com\syos\infrastructure\repository\ReportRepository.java
 d:\Projects\syos_system\src\main\java\com\syos\domain\model\Discount.java
@@ -36,6 +39,7 @@ d:\Projects\syos_system\src\main\java\com\syos\infrastructure\util\CommonVariabl
 d:\Projects\syos_system\src\main\java\com\syos\infrastructure\util\ProductValidator.java
 d:\Projects\syos_system\src\main\java\com\syos\presentation\OnlineStoreServlet.java
 d:\Projects\syos_system\src\main\java\com\syos\domain\model\User.java
+d:\Projects\syos_system\src\main\java\com\syos\presentation\AuthServlet.java
 d:\Projects\syos_system\src\main\java\com\syos\infrastructure\repository\DiscountRepository.java
 d:\Projects\syos_system\src\main\java\com\syos\application\dto\BillReportDTO.java
 d:\Projects\syos_system\src\main\java\com\syos\application\command\UnassignDiscountCommand.java
@@ -47,7 +51,6 @@ d:\Projects\syos_system\src\main\java\com\syos\infrastructure\singleton\Inventor
 d:\Projects\syos_system\src\main\java\com\syos\infrastructure\config\ConfigLoader.java
 d:\Projects\syos_system\src\main\java\com\syos\application\command\Command.java
 d:\Projects\syos_system\src\main\java\com\syos\domain\observer\StockObserver.java
-d:\Projects\syos_system\src\main\java\com\syos\db\DatabaseManager.java
 d:\Projects\syos_system\src\main\java\com\syos\application\dto\ReportDTOMapper.java
 d:\Projects\syos_system\src\main\java\com\syos\application\service\StoreBillingService.java
 d:\Projects\syos_system\src\main\java\com\syos\infrastructure\repository\ShelfStockRepository.java

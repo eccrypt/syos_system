@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import com.syos.db.DatabaseManager;
+import com.syos.infrastructure.db.DatabaseManager;
 import com.syos.domain.model.Bill;
 import com.syos.domain.model.BillItem;
 

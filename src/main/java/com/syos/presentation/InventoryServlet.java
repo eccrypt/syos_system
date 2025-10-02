@@ -143,7 +143,6 @@ public class InventoryServlet extends HttpServlet {
 
     private void receiveStock(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         StockRequest stockReq = objectMapper.readValue(req.getInputStream(), StockRequest.class);
-        // Assuming purchaseDate is today, expiryDate parsed
         java.time.LocalDate purchaseDate = java.time.LocalDate.now();
         java.time.LocalDate expiryDate = java.time.LocalDate.parse(stockReq.getExpiryDate());
         inventoryManager.receiveStock(stockReq.getProductCode(), purchaseDate, expiryDate, stockReq.getQuantity());

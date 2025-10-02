@@ -1,6 +1,6 @@
 package com.test.repository;
 
-import com.syos.db.DatabaseManager;
+import com.syos.infrastructure.db.DatabaseManager;
 import com.syos.domain.model.Bill;
 import com.syos.domain.model.BillItem;
 import com.syos.domain.model.Product;

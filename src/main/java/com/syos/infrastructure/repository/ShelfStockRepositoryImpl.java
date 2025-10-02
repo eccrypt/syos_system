@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.syos.db.DatabaseManager;
+import com.syos.infrastructure.db.DatabaseManager;
 import com.syos.domain.model.ShelfStock;
 
 public class ShelfStockRepositoryImpl implements ShelfStockRepository {

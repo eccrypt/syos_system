@@ -1,6 +1,6 @@
 package com.syos.infrastructure.repository;
 
-import com.syos.db.DatabaseManager;
+import com.syos.infrastructure.db.DatabaseManager;
 import com.syos.application.dto.ProductStockReportItemDTO;
 import com.syos.domain.model.Bill;
 import com.syos.domain.model.BillItem;

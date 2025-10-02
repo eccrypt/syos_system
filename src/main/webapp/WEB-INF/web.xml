@@ -6,8 +6,6 @@
          version="4.0">
 
     <display-name>SYOS System</display-name>
-
-    <!-- Billing Servlet -->
     <servlet>
         <servlet-name>BillingServlet</servlet-name>
         <servlet-class>com.syos.presentation.BillingServlet</servlet-class>
@@ -17,7 +15,6 @@
         <url-pattern>/api/billing/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Inventory Servlet -->
     <servlet>
         <servlet-name>InventoryServlet</servlet-name>
         <servlet-class>com.syos.presentation.InventoryServlet</servlet-class>
@@ -27,7 +24,6 @@
         <url-pattern>/api/inventory/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Online Store Servlet -->
     <servlet>
         <servlet-name>OnlineStoreServlet</servlet-name>
         <servlet-class>com.syos.presentation.OnlineStoreServlet</servlet-class>
@@ -37,7 +33,6 @@
         <url-pattern>/api/store/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Report Servlet -->
     <servlet>
         <servlet-name>ReportServlet</servlet-name>
         <servlet-class>com.syos.presentation.ReportServlet</servlet-class>
@@ -46,5 +41,90 @@
         <servlet-name>ReportServlet</servlet-name>
         <url-pattern>/api/reports/*</url-pattern>
     </servlet-mapping>
+
+    <!-- Auth Servlet for web authentication -->
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>com.syos.presentation.AuthServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <!-- Product Web Servlet -->
+    <servlet>
+        <servlet-name>ProductWebServlet</servlet-name>
+        <servlet-class>com.syos.presentation.ProductWebServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductWebServlet</servlet-name>
+        <url-pattern>/admin/products/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Checkout Servlet -->
+    <servlet>
+        <servlet-name>CheckoutServlet</servlet-name>
+        <servlet-class>com.syos.presentation.CheckoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckoutServlet</servlet-name>
+        <url-pattern>/checkout</url-pattern>
+    </servlet-mapping>
+
+    <!-- Product Display Servlet -->
+    <servlet>
+        <servlet-name>ProductDisplayServlet</servlet-name>
+        <servlet-class>com.syos.presentation.ProductDisplayServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductDisplayServlet</servlet-name>
+        <url-pattern>/products/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- JSP Configuration -->
+    <servlet>
+        <servlet-name>jsp</servlet-name>
+        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+        <init-param>
+            <param-name>fork</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xpoweredBy</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+    </servlet-mapping>
+
+    <!-- Session Configuration -->
+    <session-config>
+        <session-timeout>30</session-timeout> <!-- 30 minutes -->
+    </session-config>
+
+    <!-- Welcome File -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <!-- Error Pages -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/jsp/error/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/jsp/error/500.jsp</location>
+    </error-page>
 
 </web-app>

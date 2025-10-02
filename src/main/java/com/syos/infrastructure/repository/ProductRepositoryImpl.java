@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.syos.db.DatabaseManager;
+import com.syos.infrastructure.db.DatabaseManager;
 import com.syos.domain.model.Product;
 
 public class ProductRepositoryImpl implements ProductRepository {

@@ -31,7 +31,6 @@ com\syos\presentation\InventoryServlet$MoveStockRequest.class
 com\syos\domain\observer\StockObserver.class
 com\syos\domain\exception\SyosException.class
 com\syos\domain\enums\TransactionType.class
-com\syos\db\DatabaseManager.class
 com\syos\application\factory\UserFactory$1.class
 com\syos\application\command\AssignDiscountCommand.class
 com\syos\application\command\ViewExpiryStockCommand.class
