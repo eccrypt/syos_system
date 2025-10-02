@@ -12,9 +12,8 @@ import com.syos.domain.model.Product;
 
 public class ProductRepositoryImpl implements ProductRepository {
 
-	// find one product by its code
-	@Override
-	public Product findByCode(String code) {
+    @Override
+    public Product findByCode(String code) {
 		String sql = "SELECT code, name, price FROM product WHERE code = ?";
 		try (Connection connection = DatabaseManager.getInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -29,11 +28,10 @@ public class ProductRepositoryImpl implements ProductRepository {
 			throw new RuntimeException("Error loading product by code", e);
 		}
 		return null;
-	}
+	   }
 
-	// Load all products from the product table
-	@Override
-	public List<Product> findAll() {
+	   @Override
+	   public List<Product> findAll() {
 		String sql = "SELECT code, name, price FROM product";
 		List<Product> products = new ArrayList<>();
 		try (Connection connection = DatabaseManager.getInstance().getConnection();
@@ -85,9 +83,14 @@ public class ProductRepositoryImpl implements ProductRepository {
 		}
 	}
 
-	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-
-	}
+	   @Override
+	   public void clear() {
+	       String sql = "DELETE FROM product";
+	       try (Connection conn = DatabaseManager.getInstance().getConnection();
+	            PreparedStatement ps = conn.prepareStatement(sql)) {
+	           ps.executeUpdate();
+	       } catch (SQLException e) {
+	           throw new RuntimeException("Error clearing products", e);
+	       }
+	   }
 }

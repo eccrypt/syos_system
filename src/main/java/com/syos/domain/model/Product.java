@@ -10,10 +10,9 @@ public class Product {
 		this.code = builder.code;
 		this.name = builder.name;
 		this.price = builder.price;
-	}
+	   }
 
-	// Constructor for backward compatibility
-	public Product(String code, String name, double price) {
+	   public Product(String code, String name, double price) {
 		this.code = code;
 		this.name = name;
 		this.price = price;
