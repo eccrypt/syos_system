@@ -10,11 +10,11 @@
 
     String userRole = (String) session.getAttribute("userRole");
     if (!"ADMIN".equals(userRole) && !"STAFF".equals(userRole)) {
-        response.sendRedirect(request.getContextPath() + "/customer/dashboard.jsp");
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
         return;
     }
 
-    request.setAttribute("pageTitle", "Admin Dashboard");
+    request.setAttribute("pageTitle", "Employee Dashboard");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
@@ -48,7 +48,7 @@
     <!-- Main content -->
     <div class="col-md-9 col-lg-10 main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Admin Dashboard</h2>
+            <h2>Employee Dashboard</h2>
             <span class="badge bg-<%= "ADMIN".equals(userRole) ? "danger" : "warning" %>">
                 <%= userRole %>
             </span>

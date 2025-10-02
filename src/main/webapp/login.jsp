@@ -8,7 +8,7 @@
         if ("ADMIN".equals(userRole) || "STAFF".equals(userRole)) {
             response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
         } else {
-            response.sendRedirect(request.getContextPath() + "/customer/dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         }
         return;
     }
@@ -18,7 +18,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SYOS</title>
+    <title>Employee Login - SYOS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="<%= request.getContextPath() %>/css/custom.css" rel="stylesheet">
 </head>
@@ -30,7 +30,7 @@
                     <div class="card-body p-5">
                         <div class="text-center mb-4">
                             <h1 class="h3 mb-3 font-weight-normal">SYOS</h1>
-                            <p class="text-muted">Login to your account</p>
+                            <p class="text-muted">Employee Login</p>
                         </div>
 
                         <%-- Error message --%>
@@ -45,9 +45,9 @@
                             <input type="hidden" name="action" value="login">
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       placeholder="Enter your email" required>
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                       placeholder="Enter your username" required>
                             </div>
 
                             <div class="mb-3">
@@ -63,16 +63,6 @@
                             </div>
                         </form>
 
-                        <hr class="my-4">
-
-                        <div class="text-center">
-                            <p class="mb-0">Don't have an account?
-                                <a href="<%= request.getContextPath() %>/register.jsp">Register here</a>
-                            </p>
-                            <p class="mb-0">
-                                <a href="<%= request.getContextPath() %>/products.jsp">Browse products as guest</a>
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -12,7 +12,7 @@
 
     String userRole = (String) session.getAttribute("userRole");
     if (!"ADMIN".equals(userRole) && !"STAFF".equals(userRole)) {
-        response.sendRedirect(request.getContextPath() + "/customer/dashboard.jsp");
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
         return;
     }
 

@@ -24,14 +24,6 @@
         <url-pattern>/api/inventory/*</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>OnlineStoreServlet</servlet-name>
-        <servlet-class>com.syos.presentation.OnlineStoreServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>OnlineStoreServlet</servlet-name>
-        <url-pattern>/api/store/*</url-pattern>
-    </servlet-mapping>
 
     <servlet>
         <servlet-name>ReportServlet</servlet-name>
@@ -66,25 +58,7 @@
         <url-pattern>/admin/products/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Checkout Servlet -->
-    <servlet>
-        <servlet-name>CheckoutServlet</servlet-name>
-        <servlet-class>com.syos.presentation.CheckoutServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>CheckoutServlet</servlet-name>
-        <url-pattern>/checkout</url-pattern>
-    </servlet-mapping>
 
-    <!-- Product Display Servlet -->
-    <servlet>
-        <servlet-name>ProductDisplayServlet</servlet-name>
-        <servlet-class>com.syos.presentation.ProductDisplayServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ProductDisplayServlet</servlet-name>
-        <url-pattern>/products/*</url-pattern>
-    </servlet-mapping>
 
     <!-- JSP Configuration -->
     <servlet>

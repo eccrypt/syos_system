@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syos.domain.model.Product;
@@ -42,6 +43,20 @@ public class InventoryServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Check authentication
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().write("{\"error\":\"Unauthorized\"}");
+            return;
+        }
+        String userRole = (String) session.getAttribute("userRole");
+        if (!"ADMIN".equals(userRole) && !"STAFF".equals(userRole)) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().write("{\"error\":\"Forbidden\"}");
+            return;
+        }
+
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
@@ -88,6 +103,20 @@ public class InventoryServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Check authentication
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().write("{\"error\":\"Unauthorized\"}");
+            return;
+        }
+        String userRole = (String) session.getAttribute("userRole");
+        if (!"ADMIN".equals(userRole) && !"STAFF".equals(userRole)) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().write("{\"error\":\"Forbidden\"}");
+            return;
+        }
+
         String path = req.getPathInfo();
         if (path == null) path = "/";
 

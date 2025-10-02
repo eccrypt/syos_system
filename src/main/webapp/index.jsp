@@ -10,7 +10,7 @@
         if ("ADMIN".equals(userRole) || "STAFF".equals(userRole)) {
             response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
         } else {
-            response.sendRedirect(request.getContextPath() + "/customer/dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         }
         return;
     }
@@ -37,22 +37,8 @@
 
                         <div class="d-grid gap-2">
                             <a href="<%= request.getContextPath() %>/login.jsp" class="btn btn-primary btn-lg">
-                                Login
+                                Employee Login
                             </a>
-                            <a href="<%= request.getContextPath() %>/register.jsp" class="btn btn-outline-primary btn-lg">
-                                Register as Customer
-                            </a>
-                            <a href="<%= request.getContextPath() %>/products.jsp" class="btn btn-outline-secondary btn-lg">
-                                Browse Products
-                            </a>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <div class="text-center">
-                            <small class="text-muted">
-                                Staff/Admin? Use the login page above.
-                            </small>
                         </div>
                     </div>
                 </div>

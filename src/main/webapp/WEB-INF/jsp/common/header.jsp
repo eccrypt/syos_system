@@ -42,22 +42,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="<%= request.getContextPath() %>/admin/reports/daily-sales.jsp">Reports</a>
                             </li>
-                        <% } else { %>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<%= request.getContextPath() %>/products.jsp">Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<%= request.getContextPath() %>/customer/cart.jsp">Cart</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<%= request.getContextPath() %>/customer/orders.jsp">My Orders</a>
-                            </li>
-                        <% } %>
-                    <% } else { %>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<%= request.getContextPath() %>/products.jsp">Products</a>
-                        </li>
-                    <% } %>
                 </ul>
 
                 <ul class="navbar-nav">
@@ -73,9 +57,6 @@
                     <% } else { %>
                         <li class="nav-item">
                             <a class="nav-link" href="<%= request.getContextPath() %>/login.jsp">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<%= request.getContextPath() %>/register.jsp">Register</a>
                         </li>
                     <% } %>
                 </ul>
