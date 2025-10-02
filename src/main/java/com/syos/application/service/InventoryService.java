@@ -26,9 +26,6 @@ import com.syos.infrastructure.repository.DiscountRepository;
 import com.syos.infrastructure.repository.DiscountRepositoryImpl;
 import com.syos.infrastructure.repository.ProductRepository;
 import com.syos.infrastructure.repository.ProductRepositoryImpl;
-import com.syos.application.service.ProductService;
-import com.syos.application.service.ProductServiceImpl;
-
 import com.syos.infrastructure.singleton.InventoryManager;
 
 import com.syos.application.strategy.ExpiryAwareFifoStrategy;
@@ -38,10 +35,12 @@ public class InventoryService {
 	private final InventoryManager inventoryManager;
 	private final Scanner scanner = new Scanner(System.in);
 	private final Map<String, Command> commandMap = new HashMap<>();
+	private final DiscountRepository discountRepository;
+	private final ProductRepository productRepository;
 
 	public InventoryService() {
-		ProductRepository productRepository = new ProductRepositoryImpl();
-		DiscountRepository discountRepository = new DiscountRepositoryImpl();
+		this.productRepository = new ProductRepositoryImpl();
+		this.discountRepository = new DiscountRepositoryImpl();
 
 		this.inventoryManager = InventoryManager.getInstance(new ExpiryAwareFifoStrategy());
 
@@ -64,7 +63,6 @@ public class InventoryService {
 		commandMap.put("13", new AssignDiscountCommand(scanner, discountRepository, productRepository));
 		commandMap.put("14", new ViewAllDiscountsCommand(discountRepository, scanner));
 		commandMap.put("15", new ViewAllProductsWithDiscountsCommand(discountRepository, productRepository));
-		commandMap.put("16", new UnassignDiscountCommand(scanner, discountRepository, productRepository));
 	}
 
 	public void run() {
@@ -99,11 +97,24 @@ public class InventoryService {
 				break;
 			}
 
-			Command command = commandMap.get(choice);
-			if (command != null) {
-				command.execute();
+			if ("16".equals(choice)) {
+				System.out.print("Enter Product Code: ");
+				String productCode = scanner.nextLine().trim();
+				System.out.print("Enter Discount ID to unassign: ");
+				try {
+					int discountId = Integer.parseInt(scanner.nextLine().trim());
+					Command command = new UnassignDiscountCommand(productCode, discountId, discountRepository, productRepository);
+					command.execute();
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid Discount ID. Please enter a number.");
+				}
 			} else {
-				System.out.println("Invalid option. Please choose from the available numbers.");
+				Command command = commandMap.get(choice);
+				if (command != null) {
+					command.execute();
+				} else {
+					System.out.println("Invalid option. Please choose from the available numbers.");
+				}
 			}
 		}
 	}
