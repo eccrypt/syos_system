@@ -7,10 +7,10 @@ public class ProductStockReportItemDTO {
 	private String productName;
 	private double unitPrice;
 	private int totalQuantityOnShelf;
-	private int totalQuantityInInventory; // Quantity remaining in stock batches
-	private LocalDate earliestExpiryDateOnShelf; // For shelf stock
-	private LocalDate earliestExpiryDateInInventory; // For inventory batches
-	private int numberOfExpiringBatches; // from inventory (stock_batches)
+	private int totalQuantityInInventory; 
+	private LocalDate earliestExpiryDateOnShelf; 
+	private LocalDate earliestExpiryDateInInventory; 
+	private int numberOfExpiringBatches; 
 
 	public ProductStockReportItemDTO(String productCode, String productName, double unitPrice, int totalQuantityOnShelf,
 			int totalQuantityInInventory, LocalDate earliestExpiryDateOnShelf, LocalDate earliestExpiryDateInInventory,
@@ -25,7 +25,6 @@ public class ProductStockReportItemDTO {
 		this.numberOfExpiringBatches = numberOfExpiringBatches;
 	}
 
-	// Getters
 	public String getProductCode() {
 		return productCode;
 	}
@@ -58,6 +57,4 @@ public class ProductStockReportItemDTO {
 		return numberOfExpiringBatches;
 	}
 
-	// You might want to add setters if you build this DTO incrementally,
-	// but for reports, an immutable DTO via constructor is often sufficient.
 }

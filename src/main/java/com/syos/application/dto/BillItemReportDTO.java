@@ -9,7 +9,6 @@ public class BillItemReportDTO {
     private double discountAmount;
     private double netPrice; 
 
-    // Constructor
     public BillItemReportDTO(String productName, String productCode, int quantity,
                              double unitPrice, double calculatedSubtotal,
                              double discountAmount, double netPrice) {
@@ -22,7 +21,6 @@ public class BillItemReportDTO {
         this.netPrice = netPrice;
     }
 
-    // Getters
     public String getProductName() {
         return productName;
     }

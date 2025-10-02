@@ -1,19 +1,17 @@
 package com.syos.application.dto;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Date; // Assuming Bill model still uses java.util.Date
+import java.util.Date; 
 
 public class BillReportDTO {
     private int serialNumber;
-    private Date billDate; // Reflects Bill model's Date
+    private Date billDate; 
     private double totalAmount;
     private double cashTendered;
     private double changeReturned;
     private String transactionType;
-    private List<BillItemReportDTO> items; // Nested DTO for bill items
+    private List<BillItemReportDTO> items;
 
-    // Constructor
     public BillReportDTO(int serialNumber, Date billDate, double totalAmount,
                          double cashTendered, double changeReturned,
                          String transactionType, List<BillItemReportDTO> items) {
@@ -26,7 +24,6 @@ public class BillReportDTO {
         this.items = items;
     }
 
-    // Getters
     public int getSerialNumber() {
         return serialNumber;
     }
