@@ -26,6 +26,7 @@ import com.syos.application.strategy.ExpiryAwareFifoStrategy;
 import com.syos.application.strategy.NoDiscountStrategy;
 
 public class BillingServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ProductRepository productRepository = new ProductRepositoryImpl();
     private final ShelfStockRepository shelfStockRepository = new ShelfStockRepositoryImpl(productRepository);
@@ -162,7 +163,6 @@ public class BillingServlet extends HttpServlet {
 
     private void getAllBills(HttpServletResponse resp) throws IOException {
         try {
-            // Note: Need to implement findAll method in BillingRepository if not exists
             resp.getWriter().write("{\"bills\":\"Bill listing not implemented yet\"}");
         } catch (Exception e) {
             resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
@@ -171,14 +171,12 @@ public class BillingServlet extends HttpServlet {
 
     private void getBillBySerial(int serialNumber, HttpServletResponse resp) throws IOException {
         try {
-            // Note: Need to implement findBySerial method in BillingRepository if not exists
             resp.getWriter().write("{\"bill\":\"Bill with serial " + serialNumber + " not found\"}");
         } catch (Exception e) {
             resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
         }
     }
 
-    // DTOs
     public static class BillRequest {
         private List<BillItemRequest> items;
         private double cashTendered;

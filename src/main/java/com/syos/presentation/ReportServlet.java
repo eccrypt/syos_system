@@ -24,6 +24,7 @@ import com.syos.infrastructure.repository.StockBatchRepositoryImpl;
 import java.util.List;
 
 public class ReportServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ReportRepository reportRepository;
 

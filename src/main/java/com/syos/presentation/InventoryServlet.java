@@ -27,6 +27,7 @@ import com.syos.application.strategy.ExpiryAwareFifoStrategy;
 import com.syos.infrastructure.util.CommonVariables;
 
 public class InventoryServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ProductRepository productRepository = new ProductRepositoryImpl();
     private final DiscountRepository discountRepository = new DiscountRepositoryImpl();
