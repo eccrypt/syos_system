@@ -41,7 +41,6 @@ public class ProductWebServlet extends HttpServlet {
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
-        // Check authentication for admin operations
         User user = (User) req.getSession().getAttribute("user");
         String userRole = (String) req.getSession().getAttribute("userRole");
 

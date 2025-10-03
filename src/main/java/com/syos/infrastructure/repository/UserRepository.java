@@ -1,12 +1,14 @@
 package com.syos.infrastructure.repository;
 
 import com.syos.domain.model.Employee;
+import com.syos.domain.model.User;
 
 public interface UserRepository {
 
-    Employee findByUsername(String username);
+    User findByEmail(String email);
 
-    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 
-    void clear();
+    void save(Employee employee);
+
 }

@@ -45,9 +45,9 @@
                             <input type="hidden" name="action" value="login">
 
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                       placeholder="Enter your username" required>
+                                <label for="email" class="form-label">email</label>
+                                <input type="text" class="form-control" id="email" name="email"
+                                       placeholder="Enter your email" required>
                             </div>
 
                             <div class="mb-3">
@@ -62,6 +62,10 @@
                                 </button>
                             </div>
                         </form>
+
+                        <div class="text-center mt-3">
+                            <p class="mb-0">Don't have an account? <a href="<%= request.getContextPath() %>/register.jsp">Register here</a></p>
+                        </div>
 
                     </div>
                 </div>

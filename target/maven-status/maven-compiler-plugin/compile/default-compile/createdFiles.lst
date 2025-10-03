@@ -13,6 +13,7 @@ com\syos\application\dto\BillReportDTO.class
 com\syos\presentation\BillingServlet.class
 com\syos\application\command\UpdateProductCommand.class
 com\syos\application\strategy\PricingStrategy.class
+com\syos\infrastructure\repository\UserRepository.class
 com\syos\application\command\CreateDiscountCommand.class
 com\syos\application\command\UnassignDiscountCommand.class
 com\syos\application\command\ViewStockCommand.class
@@ -21,6 +22,7 @@ com\syos\presentation\InventoryServlet$ProductCodeRequest.class
 com\syos\application\command\ViewAllDiscountsCommand.class
 com\syos\infrastructure\repository\ReportRepository.class
 com\syos\presentation\InventoryServlet$DiscountRequest.class
+com\syos\infrastructure\repository\UserRepositoryImpl.class
 com\syos\presentation\ProductWebServlet.class
 com\syos\application\command\ViewAllProductsCommand.class
 com\syos\application\service\InventoryService.class
@@ -43,6 +45,7 @@ com\syos\infrastructure\repository\ShelfStockRepository.class
 com\syos\application\strategy\DiscountPricingStrategy.class
 com\syos\presentation\InventoryServlet$AssignDiscountRequest.class
 com\syos\infrastructure\repository\BillingRepository.class
+com\syos\domain\model\Employee.class
 com\syos\infrastructure\repository\ProductRepositoryImpl.class
 com\syos\infrastructure\repository\DiscountRepositoryImpl.class
 com\syos\application\command\AddProductCommand.class
@@ -78,6 +81,7 @@ com\syos\domain\model\Discount.class
 com\syos\domain\model\StockBatch.class
 com\syos\application\dto\ProductStockReportItemDTO.class
 com\syos\application\command\MoveToShelfCommand.class
+com\syos\domain\model\Customer.class
 com\syos\presentation\SyosSystem.class
 com\syos\domain\exception\ValidationException.class
 com\syos\presentation\InventoryServlet$StockRequest.class

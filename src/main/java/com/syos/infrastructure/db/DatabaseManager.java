@@ -15,7 +15,14 @@ public class DatabaseManager {
 	private Connection connection;
 
 	private DatabaseManager() throws SQLException {
-		this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
+		try {
+			this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
+			System.out.println("Database connection established successfully to: " + URL);
+		} catch (SQLException e) {
+			System.err.println("Failed to connect to database: " + URL + " with user: " + USER);
+			System.err.println("SQLException: " + e.getMessage());
+			throw e;
+		}
 	}
 
 	public static synchronized DatabaseManager getInstance() throws SQLException {

@@ -39,6 +39,9 @@
                             <a href="<%= request.getContextPath() %>/login.jsp" class="btn btn-primary btn-lg">
                                 Employee Login
                             </a>
+                            <a href="<%= request.getContextPath() %>/register.jsp" class="btn btn-outline-primary btn-lg">
+                                Register New Employee
+                            </a>
                         </div>
                     </div>
                 </div>

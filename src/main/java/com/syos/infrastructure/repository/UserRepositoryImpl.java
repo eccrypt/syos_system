@@ -4,51 +4,85 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import com.syos.infrastructure.db.DatabaseManager;
 import com.syos.domain.model.Employee;
+import com.syos.domain.model.Customer;
+import com.syos.domain.model.User;
 import com.syos.domain.enums.UserType;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserRepositoryImpl implements UserRepository {
 
-    @Override
-    public Employee findByUsername(String username) {
-        String sql = "SELECT id, username, password_hash, role FROM users WHERE username = ?";
-        try (Connection connection = DatabaseManager.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+	@Override
+	public User findByEmail(String email) {
+		String sql = "SELECT id, email, password_hash, first_name, last_name, role, created_date FROM users WHERE email = ?";
+		try (Connection connection = DatabaseManager.getInstance().getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(1, username.toLowerCase());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                String fetchedUsername = resultSet.getString("username");
-                String hashedPassword = resultSet.getString("password_hash");
-                String roleString = resultSet.getString("role");
+			preparedStatement.setString(1, email.toLowerCase());
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				String email1 = resultSet.getString("email");
+				String hashedPassword = resultSet.getString("password_hash");
+				String firstName = resultSet.getString("first_name");
+				String lastName = resultSet.getString("last_name");
+				String roleString = resultSet.getString("role");
+				Timestamp createdDate = resultSet.getTimestamp("created_date");
 
-                UserType role = UserType.valueOf(roleString.toUpperCase());
+				UserType role = UserType.valueOf(roleString.toUpperCase());
 
-                return new Employee(fetchedUsername, hashedPassword, role);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error finding user", e);
-        }
-        return null;
-    }
+				if (role == UserType.CUSTOMER) {
+					return new Customer(email1, hashedPassword, firstName, lastName, role, createdDate);
+				} else {
+					return new Employee(email1, hashedPassword, firstName, lastName, role, createdDate);
+				}
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException("Error finding user", e);
+		}
+		return null;
+	}
 
-    @Override
-    public boolean existsByUsername(String username) {
-        String sql = "SELECT 1 FROM users WHERE username = ?";
-        try (Connection connection = DatabaseManager.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, username.toLowerCase());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error checking user existence", e);
-        }
-    }
+	@Override
+	public boolean existsByEmail(String email) {
+		String sql = "SELECT 1 FROM users WHERE email = ?";
+		try (Connection connection = DatabaseManager.getInstance().getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+			preparedStatement.setString(1, email.toLowerCase());
+			System.out.println("Executing query: " + sql + " with email: " + email.toLowerCase());
+			ResultSet resultSet = preparedStatement.executeQuery();
+			boolean exists = resultSet.next();
+			System.out.println("User existence check result for '" + email + "': " + exists);
+			return exists;
+		} catch (SQLException e) {
+			System.err.println("SQLException in existsByemail: " + e.getMessage());
+			System.err.println("SQL State: " + e.getSQLState());
+			System.err.println("Error Code: " + e.getErrorCode());
+			throw new RuntimeException("Error checking user existence", e);
+		}
+	}
 
-    @Override
-    public void clear() {
-        // Implementation for clearing users, if needed
-    }
+	@Override
+	public void save(Employee employee) {
+		String sql = "INSERT INTO users (email, first_name, last_name, user_type, password_hash, role, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		try (Connection connection = DatabaseManager.getInstance().getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+			String hashedPassword = BCrypt.hashpw(employee.getPassword(), BCrypt.gensalt());
+			preparedStatement.setString(1, employee.getEmail());
+			preparedStatement.setString(2, employee.getFirstName());
+			preparedStatement.setString(3, employee.getLastName());
+			preparedStatement.setString(4, employee.getRole().name().toUpperCase()); 
+			preparedStatement.setString(5, hashedPassword);
+			preparedStatement.setString(6, employee.getRole().name().toUpperCase()); 
+			preparedStatement.setTimestamp(7, employee.getCreatedDate());
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			throw new RuntimeException("Error saving user", e);
+		}
+	}
+
 }

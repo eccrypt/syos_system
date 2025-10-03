@@ -1,15 +1,21 @@
 package com.syos.domain.model;
 
+import java.sql.Timestamp;
+
 import com.syos.domain.enums.UserType;
 
 public class Employee extends User {
-    private final String username;
+    private final String firstName;
+    private final String lastName;
     private final UserType role;
+    private final Timestamp createdDate;
 
-    public Employee(String username, String password, UserType role) {
-        super(username, password); // using username as email for now
-        this.username = username;
+    public Employee(String email, String password, String firstName, String lastName, UserType role, Timestamp createdDate) {
+        super(email, password);
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.role = role;
+        this.createdDate = createdDate;
     }
 
     @Override
@@ -17,7 +23,15 @@ public class Employee extends User {
         return role;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 }
