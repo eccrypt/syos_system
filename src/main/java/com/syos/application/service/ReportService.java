@@ -25,9 +25,6 @@ public class ReportService {
 	private final Scanner scanner;
 	private final ReportRepository reportRepository;
 
-	private static final String LINE_SEPARATOR_HEAD = "===================================================================================";
-	private static final String LINE_SEPARATOR_HEAD_LONG = "=====================================================================================================================================";
-
 	public ReportService(Scanner scanner, ProductRepository productRepository,
 			ShelfStockRepository shelfStockRepository, StockBatchRepository stockBatchRepository) {
 		this.scanner = scanner;
@@ -155,7 +152,7 @@ public class ReportService {
 		} else {
 			System.out.println("\nSales Report for: ALL TRANSACTIONS");
 		}
-		System.out.println(LINE_SEPARATOR_HEAD);
+
 		for (BillReportDTO billDTO : billReportDTOs) {
 			printBillDetails(billDTO);
 		}
@@ -166,7 +163,6 @@ public class ReportService {
 		} else {
 			System.out.printf("Total revenue for all transactions: %.2f%n", totalDailyRevenue);
 		}
-		System.out.println(LINE_SEPARATOR_HEAD);
 	}
 
 	private void printBillDetails(BillReportDTO billDTO) {
@@ -180,7 +176,6 @@ public class ReportService {
 		List<BillItemReportDTO> itemDTOs = billDTO.getItems();
 		if (itemDTOs != null && !itemDTOs.isEmpty()) {
 			System.out.printf("  %-25s %-10s %-10s %-12s %-10s%n", "Item", "Qty", "Unit Price", "Subtotal", "Discount");
-			System.out.println("  ---------------------------------------------------------------------------------");
 			for (BillItemReportDTO itemDTO : itemDTOs) {
 				System.out.printf("  %-25s %-10d %-10.2f %-12.2f %-10.2f%n", itemDTO.getProductName(),
 						itemDTO.getQuantity(), itemDTO.getUnitPrice(), itemDTO.getCalculatedSubtotal(),
@@ -191,7 +186,6 @@ public class ReportService {
 		} else {
 			System.out.println("  No items found for this bill.");
 		}
-		System.out.println("-----------------------------------------------------------------------------------");
 	}
 
 	public void generateProductStockReport() {
@@ -208,10 +202,9 @@ public class ReportService {
 
 	private void displayProductStockReportTable(List<ProductStockReportItemDTO> reportItems) {
 		System.out.println("\nProduct Stock Report");
-		System.out.println(LINE_SEPARATOR_HEAD_LONG);
+
 		System.out.printf("%-15s %-30s %-10s %-10s %-22s %-22s %-10s%n", "Code", "Product Name", "Shelf Qty",
 				"Inv. Qty", "Earliest Shelf Exp.", "Earliest Inv. Exp.", "Exp. Batches");
-		System.out.println(LINE_SEPARATOR_HEAD_LONG);
 
 		for (ProductStockReportItemDTO item : reportItems) {
 			String earliestShelfExpiry = (item.getEarliestExpiryDateOnShelf() != null)
@@ -225,7 +218,6 @@ public class ReportService {
 					item.getProductName(), item.getTotalQuantityOnShelf(), item.getTotalQuantityInInventory(),
 					earliestShelfExpiry, earliestInvExpiry, item.getNumberOfExpiringBatches());
 		}
-		System.out.println(LINE_SEPARATOR_HEAD_LONG);
 
 		int totalProducts = reportItems.size();
 		int totalShelfQuantity = reportItems.stream().mapToInt(ProductStockReportItemDTO::getTotalQuantityOnShelf)
@@ -235,7 +227,6 @@ public class ReportService {
 
 		System.out.printf("Summary: %d Products | Total Shelf Quantity: %d | Total Inventory Quantity: %d%n",
 				totalProducts, totalShelfQuantity, totalInventoryQuantity);
-		System.out.println(LINE_SEPARATOR_HEAD_LONG);
 	}
 
 	private void generateShelfAndInventoryAnalysisReport() {
@@ -280,10 +271,10 @@ public class ReportService {
 		if (itemsOnShelf.isEmpty()) {
 			System.out.println("No items currently on the shelf.");
 		} else {
-			System.out.println(LINE_SEPARATOR_HEAD);
+
 			System.out.printf("%-15s %-30s %-15s %-22s%n", "Code", "Product Name", "Qty on Shelf",
 					"Earliest Shelf Exp.");
-			System.out.println(LINE_SEPARATOR_HEAD);
+		
 
 			int totalShelfQuantity = 0;
 			for (ProductStockReportItemDTO item : itemsOnShelf) {
@@ -294,10 +285,10 @@ public class ReportService {
 						item.getTotalQuantityOnShelf(), earliestShelfExpiry);
 				totalShelfQuantity += item.getTotalQuantityOnShelf();
 			}
-			System.out.println(LINE_SEPARATOR_HEAD);
+
 			System.out.printf("Total unique products on shelf: %d | Total quantity on shelf: %d%n", itemsOnShelf.size(),
 					totalShelfQuantity);
-			System.out.println(LINE_SEPARATOR_HEAD);
+	
 		}
 	}
 
@@ -308,10 +299,10 @@ public class ReportService {
 					+ CommonVariables.STOCK_ALERT_THRESHOLD + ".");
 		} else {
 			System.out.println("The following items have a high quantity on the shelf");
-			System.out.println(LINE_SEPARATOR_HEAD);
+		
 			System.out.printf("%-15s %-30s %-15s %-22s%n", "Code", "Product Name", "Qty on Shelf",
 					"Earliest Shelf Exp.");
-			System.out.println(LINE_SEPARATOR_HEAD);
+		
 
 			int totalReshelveCandidateQuantity = 0;
 			for (ProductStockReportItemDTO item : reshelveCandidates) {
@@ -322,10 +313,10 @@ public class ReportService {
 						item.getTotalQuantityOnShelf(), earliestShelfExpiry);
 				totalReshelveCandidateQuantity += item.getTotalQuantityOnShelf();
 			}
-			System.out.println(LINE_SEPARATOR_HEAD);
+	
 			System.out.printf("Total reshelving products: %d | Total quantity: %d%n", reshelveCandidates.size(),
 					totalReshelveCandidateQuantity);
-			System.out.println(LINE_SEPARATOR_HEAD);
+	
 		}
 	}
 
@@ -336,10 +327,10 @@ public class ReportService {
 		} else {
 			System.out.println("The following products have a total quantity (shelf + inventory) below "
 					+ CommonVariables.STOCK_ALERT_THRESHOLD);
-			System.out.println(LINE_SEPARATOR_HEAD);
+	
 			System.out.printf("%-15s %-30s %-10s %-10s %-10s%n", "Code", "Product Name", "Shelf Qty", "Inv. Qty",
 					"Total Qty");
-			System.out.println(LINE_SEPARATOR_HEAD);
+	
 
 			StockObserver stockAlertService = new StockAlertService(CommonVariables.STOCK_ALERT_THRESHOLD);
 			int totalLowStockProducts = 0;
@@ -351,9 +342,9 @@ public class ReportService {
 				stockAlertService.onStockLow(item.getProductCode(), totalQuantity);
 				totalLowStockProducts++;
 			}
-			System.out.println(LINE_SEPARATOR_HEAD);
+	
 			System.out.printf("Total products in low stock: %d%n", totalLowStockProducts);
-			System.out.println(LINE_SEPARATOR_HEAD);
+		
 		}
 	}
 }
