@@ -89,17 +89,15 @@ public class AuthServlet extends HttpServlet {
     private void handleRegister(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
-        String username = req.getParameter("username");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
         String role = req.getParameter("role");
 
-        logger.info("Received registration request for username={}, email={}", username, email);
+        logger.info("Received registration request for email={}", email);
 
         if (firstName == null || firstName.trim().isEmpty() ||
             lastName == null || lastName.trim().isEmpty() ||
-            username == null || username.trim().isEmpty() ||
             email == null || email.trim().isEmpty() ||
             password == null || password.trim().isEmpty() ||
             confirmPassword == null || confirmPassword.trim().isEmpty() ||
@@ -112,16 +110,16 @@ public class AuthServlet extends HttpServlet {
         }
 
         if (!password.equals(confirmPassword)) {
-            logger.warn("Password mismatch for username={}, email={}", username, email);
+            logger.warn("Password mismatch for email={}", email);
             req.setAttribute("error", "Passwords do not match");
             req.getRequestDispatcher("/register.jsp").forward(req, resp);
             return;
         }
 
         try {
-            if (userRepository.existsByEmail(username)) {
-                logger.warn("Username already exists: {}", username);
-                req.setAttribute("error", "Username already exists");
+            if (userRepository.existsByEmail(email)) {
+                logger.warn("Email already exists: {}", email);
+                req.setAttribute("error", "Email already exists");
                 req.getRequestDispatcher("/register.jsp").forward(req, resp);
                 return;
             }
@@ -129,14 +127,14 @@ public class AuthServlet extends HttpServlet {
             UserType userType = UserType.valueOf(role.toUpperCase());
             Employee employee = new Employee(email, password, firstName, lastName, userType, new Timestamp(System.currentTimeMillis()));
 
-            logger.info("Saving new employee: username={}, email={}, role={}", username, email, userType);
+            logger.info("Saving new employee: email={}, role={}", email, userType);
             userRepository.save(employee);
 
-            logger.info("Registration successful for username={}, email={}", username, email);
+            logger.info("Registration successful for email={}", email);
             resp.sendRedirect(req.getContextPath() + "/login.jsp");
 
         } catch (Exception e) {
-            logger.error("Registration failed for username={}, email={}. Cause: {}", username, email, e.getMessage(), e);
+            logger.error("Registration failed for email={}. Cause: {}", email, e.getMessage(), e);
             req.setAttribute("error", "Registration failed: " + e.getMessage());
             req.getRequestDispatcher("/register.jsp").forward(req, resp);
         }

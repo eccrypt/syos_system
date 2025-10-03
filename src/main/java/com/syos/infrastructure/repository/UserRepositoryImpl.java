@@ -66,7 +66,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public void save(Employee employee) {
-		String sql = "INSERT INTO users (email, first_name, last_name, user_type, password_hash, role, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO users (email, first_name, last_name, password_hash, role, created_date) VALUES (?, ?, ?, ?, ?, ?)";
 		try (Connection connection = DatabaseManager.getInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
@@ -74,10 +74,9 @@ public class UserRepositoryImpl implements UserRepository {
 			preparedStatement.setString(1, employee.getEmail());
 			preparedStatement.setString(2, employee.getFirstName());
 			preparedStatement.setString(3, employee.getLastName());
-			preparedStatement.setString(4, employee.getRole().name().toUpperCase()); 
-			preparedStatement.setString(5, hashedPassword);
-			preparedStatement.setString(6, employee.getRole().name().toUpperCase()); 
-			preparedStatement.setTimestamp(7, employee.getCreatedDate());
+			preparedStatement.setString(4, hashedPassword);
+			preparedStatement.setString(5, employee.getRole().name().toUpperCase());
+			preparedStatement.setTimestamp(6, employee.getCreatedDate());
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
