@@ -74,7 +74,6 @@ function hideLoading(button, originalText) {
     button.prop('disabled', false).html(originalText);
 }
 
-// AJAX helper for API calls
 function apiCall(url, method, data, successCallback, errorCallback) {
     $.ajax({
         url: url,
@@ -101,7 +100,7 @@ function apiCall(url, method, data, successCallback, errorCallback) {
     });
 }
 
-// Cart functionality
+
 let cart = [];
 
 function addToCart(productCode, productName, price, quantity = 1) {

@@ -71,17 +71,6 @@
                         <h5 class="mb-0">Add Products</h5>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="productSearch"
-                                       placeholder="Search product by code or name...">
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-outline-primary w-100" onclick="searchProduct()">
-                                    <i class="fas fa-search me-1"></i>Filter
-                                </button>
-                            </div>
-                        </div>
 
                         <div id="productResults">
                             <div class="text-center py-4">
@@ -164,15 +153,9 @@
 <script>
 let billItems = [];
 let itemCount = 0;
-let allProducts = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     loadAllProducts();
-
-    // Add real-time search
-    document.getElementById('productSearch').addEventListener('input', function() {
-        searchProduct();
-    });
 });
 
 function formatPrice(price) {
@@ -198,7 +181,6 @@ function loadAllProducts() {
             return response.json();
         })
         .then(products => {
-            allProducts = products;
             displayProducts(products);
         })
         .catch(error => {
@@ -243,7 +225,7 @@ function displayProducts(products) {
             <tr>
                 <td><code>${product.code}</code></td>
                 <td>${product.name}</td>
-                <td>$${formatPrice(product.price)}</td>
+                <td>$` + formatPrice(product.price) + `</td>
                 <td>
                     <button class="btn btn-primary btn-sm" onclick="addItemToBill('${product.code}', '${product.name}', formatPriceValue(product.price))">
                         <i class="fas fa-plus me-1"></i>Add
@@ -262,23 +244,6 @@ function displayProducts(products) {
     resultsDiv.innerHTML = html;
 }
 
-// Product search
-function searchProduct() {
-    const query = document.getElementById('productSearch').value.trim();
-    if (!query) {
-        // If no query, show all products
-        displayProducts(allProducts);
-        return;
-    }
-
-    // Filter products based on query
-    const filteredProducts = allProducts.filter(product =>
-        product.code.toLowerCase().includes(query.toLowerCase()) ||
-        product.name.toLowerCase().includes(query.toLowerCase())
-    );
-
-    displayProducts(filteredProducts);
-}
 
 // Add item to bill (mock function)
 function addItemToBill(productCode, productName, price, quantity = 1) {

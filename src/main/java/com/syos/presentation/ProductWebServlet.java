@@ -76,20 +76,26 @@ public class ProductWebServlet extends HttpServlet {
     }
 
     private void searchProducts(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String query = req.getParameter("q");
-        if (query == null || query.trim().isEmpty()) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"Query parameter 'q' is required\"}");
-            return;
-        }
+        String queryParam = req.getParameter("q");
+        final String query = (queryParam == null) ? "" : queryParam.trim();
 
         try {
             List<Product> products = productRepository.findAll();
-            List<ProductSearchResult> matchingProducts = products.stream()
-                .filter(p -> p.getCode().toLowerCase().contains(query.toLowerCase()) ||
-                           p.getName().toLowerCase().contains(query.toLowerCase()))
-                .map(p -> new ProductSearchResult(p.getCode(), p.getName(), p.getPrice()))
-                .toList();
+            List<ProductSearchResult> matchingProducts;
+
+            if (query.isEmpty()) {
+                // Return all products if no query
+                matchingProducts = products.stream()
+                    .map(p -> new ProductSearchResult(p.getCode(), p.getName(), p.getPrice()))
+                    .toList();
+            } else {
+                // Filter products based on query
+                matchingProducts = products.stream()
+                    .filter(p -> p.getCode().toLowerCase().contains(query.toLowerCase()) ||
+                               p.getName().toLowerCase().contains(query.toLowerCase()))
+                    .map(p -> new ProductSearchResult(p.getCode(), p.getName(), p.getPrice()))
+                    .toList();
+            }
 
             resp.setContentType("application/json");
             objectMapper.writeValue(resp.getWriter(), matchingProducts);

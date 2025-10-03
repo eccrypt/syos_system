@@ -98,8 +98,6 @@ public class ReportServlet extends HttpServlet {
         }
 
         try {
-            // Note: ReportService methods print to console, need to adapt for API
-            // For now, return basic info
             resp.getWriter().write("{\"report\":\"Daily sales report for " + reportDate + "\",\"status\":\"Generated\"}");
         } catch (Exception e) {
             resp.setContentType("application/json");
