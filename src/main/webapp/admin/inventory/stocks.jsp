@@ -2,6 +2,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.syos.domain.model.StockBatch" %>
 <%@ page import="com.syos.domain.model.User" %>
+<%@ page import="com.syos.infrastructure.repository.StockBatchRepository" %>
+<%@ page import="com.syos.infrastructure.repository.StockBatchRepositoryImpl" %>
 <%
     // Check authentication and role
     User user = (User) session.getAttribute("user");
@@ -61,20 +63,6 @@
             </div>
         </div>
 
-        <%-- Error/Success messages --%>
-        <% String error = (String) request.getAttribute("error"); %>
-        <% if (error != null) { %>
-            <div class="alert alert-danger" role="alert">
-                <%= error %>
-            </div>
-        <% } %>
-
-        <% String success = (String) request.getAttribute("success"); %>
-        <% if (success != null) { %>
-            <div class="alert alert-success" role="alert">
-                <%= success %>
-            </div>
-        <% } %>
 
         <!-- Stock Overview -->
         <div class="row mb-4">
@@ -129,8 +117,9 @@
                         </thead>
                         <tbody>
                             <%
-                                // This would normally come from a servlet
-                                List<StockBatch> stockBatches = (List<StockBatch>) request.getAttribute("stockBatches");
+                                // Fetch stock batches from repository
+                                StockBatchRepository stockBatchRepository = new StockBatchRepositoryImpl();
+                                List<StockBatch> stockBatches = stockBatchRepository.findAllExpiringBatches(10000); // Large threshold to get all
                                 if (stockBatches != null && !stockBatches.isEmpty()) {
                                     for (StockBatch batch : stockBatches) {
                             %>
@@ -139,15 +128,11 @@
                                     <td><%= batch.getId() %></td>
                                     <td><%= batch.getPurchaseDate() %></td>
                                     <td><%= batch.getExpiryDate() %></td>
-                                    <td><%= batch.getQuantity() %></td>
+                                    <td><%= batch.getQuantityRemaining() %></td>
                                     <td><%= batch.getQuantityRemaining() %></td>
                                     <td>
                                         <% if (batch.getQuantityRemaining() == 0) { %>
                                             <span class="badge bg-secondary">Empty</span>
-                                        <% } else if (batch.isExpired()) { %>
-                                            <span class="badge bg-danger">Expired</span>
-                                        <% } else if (batch.isExpiringSoon()) { %>
-                                            <span class="badge bg-warning">Expiring Soon</span>
                                         <% } else { %>
                                             <span class="badge bg-success">Active</span>
                                         <% } %>

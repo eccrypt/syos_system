@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.LocalDate" %>
 <%@ page import="com.syos.domain.model.Discount" %>
 <%@ page import="com.syos.domain.model.User" %>
+<%@ page import="com.syos.infrastructure.repository.DiscountRepository" %>
+<%@ page import="com.syos.infrastructure.repository.DiscountRepositoryImpl" %>
 <%
     // Check authentication and role
     User user = (User) session.getAttribute("user");
@@ -56,20 +59,6 @@
             </a>
         </div>
 
-        <%-- Error/Success messages --%>
-        <% String error = (String) request.getAttribute("error"); %>
-        <% if (error != null) { %>
-            <div class="alert alert-danger" role="alert">
-                <%= error %>
-            </div>
-        <% } %>
-
-        <% String success = (String) request.getAttribute("success"); %>
-        <% if (success != null) { %>
-            <div class="alert alert-success" role="alert">
-                <%= success %>
-            </div>
-        <% } %>
 
         <div class="card">
             <div class="card-header">
@@ -92,8 +81,9 @@
                         </thead>
                         <tbody>
                             <%
-                                // This would normally come from a servlet
-                                List<Discount> discounts = (List<Discount>) request.getAttribute("discounts");
+                                // Fetch discounts from repository
+                                DiscountRepository discountRepository = new DiscountRepositoryImpl();
+                                List<Discount> discounts = discountRepository.findAll();
                                 if (discounts != null && !discounts.isEmpty()) {
                                     for (Discount discount : discounts) {
                             %>
@@ -101,20 +91,21 @@
                                     <td><%= discount.getId() %></td>
                                     <td><%= discount.getName() %></td>
                                     <td>
-                                        <span class="badge bg-<%= discount.getDiscountType() == com.syos.domain.enums.DiscountType.PERCENT ? "info" : "success" %>">
-                                            <%= discount.getDiscountType() %>
+                                        <span class="badge bg-<%= discount.getType() == com.syos.domain.enums.DiscountType.PERCENT ? "info" : "success" %>">
+                                            <%= discount.getType() %>
                                         </span>
                                     </td>
                                     <td>
-                                        <%= discount.getDiscountType() == com.syos.domain.enums.DiscountType.PERCENT ?
+                                        <%= discount.getType() == com.syos.domain.enums.DiscountType.PERCENT ?
                                             discount.getValue() + "%" : "$" + discount.getValue() %>
                                     </td>
-                                    <td><%= discount.getStartDate() %></td>
-                                    <td><%= discount.getEndDate() %></td>
+                                    <td><%= discount.getStart() %></td>
+                                    <td><%= discount.getEnd() %></td>
                                     <td>
-                                        <% if (discount.isActive()) { %>
+                                        <% LocalDate now = LocalDate.now(); %>
+                                        <% if (discount.isActiveOn(now)) { %>
                                             <span class="badge bg-success">Active</span>
-                                        <% } else if (discount.isExpired()) { %>
+                                        <% } else if (discount.getEnd().isBefore(now)) { %>
                                             <span class="badge bg-secondary">Expired</span>
                                         <% } else { %>
                                             <span class="badge bg-warning">Scheduled</span>

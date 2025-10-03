@@ -54,20 +54,6 @@
             </a>
         </div>
 
-        <%-- Error/Success messages --%>
-        <% String error = (String) request.getAttribute("error"); %>
-        <% if (error != null) { %>
-            <div class="alert alert-danger" role="alert">
-                <%= error %>
-            </div>
-        <% } %>
-
-        <% String success = (String) request.getAttribute("success"); %>
-        <% if (success != null) { %>
-            <div class="alert alert-success" role="alert">
-                <%= success %>
-            </div>
-        <% } %>
 
         <div class="row justify-content-center">
             <div class="col-md-8">
