@@ -27,14 +27,14 @@ public class SyosSystem {
 			context.addWelcomeFile("index.html");
 
 			Tomcat.addServlet(context, "BillingServlet", new BillingServlet());
-			context.addServletMappingDecoded("/api/billing/*", "BillingServlet");
+			context.addServletMappingDecoded("/billing/*", "BillingServlet");
 
 			Tomcat.addServlet(context, "InventoryServlet", new InventoryServlet());
-			context.addServletMappingDecoded("/api/inventory/*", "InventoryServlet");
+			context.addServletMappingDecoded("/inventory/*", "InventoryServlet");
 
 
 			Tomcat.addServlet(context, "ReportServlet", new ReportServlet());
-			context.addServletMappingDecoded("/api/reports/*", "ReportServlet");
+			context.addServletMappingDecoded("/reports/*", "ReportServlet");
 
 			Tomcat.addServlet(context, "AuthServlet", new AuthServlet());
 			context.addServletMappingDecoded("/auth", "AuthServlet");
