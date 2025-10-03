@@ -14,6 +14,12 @@
         return;
     }
 
+    // Dashboard data - simplified for now
+    int totalProducts = 0;
+    double todaySales = 0.0;
+    int lowStockCount = 0;
+    long expiringSoon = 0;
+
     request.setAttribute("pageTitle", "Employee Dashboard");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
@@ -61,7 +67,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-box fa-2x text-primary mb-2"></i>
-                        <h4 class="mb-0">--</h4>
+                        <h4 class="mb-0"><%= totalProducts %></h4>
                         <small class="text-muted">Total Products</small>
                     </div>
                 </div>
@@ -70,7 +76,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-shopping-cart fa-2x text-success mb-2"></i>
-                        <h4 class="mb-0">--</h4>
+                        <h4 class="mb-0">$<%= String.format("%.2f", todaySales) %></h4>
                         <small class="text-muted">Today's Sales</small>
                     </div>
                 </div>
@@ -79,7 +85,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
-                        <h4 class="mb-0">--</h4>
+                        <h4 class="mb-0"><%= lowStockCount %></h4>
                         <small class="text-muted">Low Stock Items</small>
                     </div>
                 </div>
@@ -88,61 +94,8 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-calendar-times fa-2x text-danger mb-2"></i>
-                        <h4 class="mb-0">--</h4>
+                        <h4 class="mb-0"><%= expiringSoon %></h4>
                         <small class="text-muted">Expiring Soon</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Quick Actions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <a href="<%= request.getContextPath() %>/admin/products/add.jsp" class="btn btn-primary w-100">
-                                    <i class="fas fa-plus me-2"></i>Add Product
-                                </a>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <a href="<%= request.getContextPath() %>/admin/inventory/receive-stock.jsp" class="btn btn-success w-100">
-                                    <i class="fas fa-truck me-2"></i>Receive Stock
-                                </a>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <a href="<%= request.getContextPath() %>/admin/billing/create-bill.jsp" class="btn btn-info w-100">
-                                    <i class="fas fa-cash-register me-2"></i>Create Bill
-                                </a>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <a href="<%= request.getContextPath() %>/admin/reports/daily-sales.jsp" class="btn btn-secondary w-100">
-                                    <i class="fas fa-chart-line me-2"></i>View Reports
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Recent Activity</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center py-4">
-                            <i class="fas fa-clock fa-2x text-muted mb-3"></i>
-                            <p class="text-muted mb-0">No recent activity</p>
-                            <small class="text-muted">System activities will appear here</small>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -16,9 +16,11 @@
 <body>
 <%
     String firstName = "";
-    if (user instanceof Employee) {
-        firstName = ((Employee) user).getFirstName();
+    Object userObj = session.getAttribute("user");
+    if (userObj instanceof Employee) {
+        firstName = ((Employee) userObj).getFirstName();
     }
+    boolean isAdminOrStaff = session.getAttribute("user") != null && ("ADMIN".equals((String) session.getAttribute("userRole")) || "STAFF".equals((String) session.getAttribute("userRole")));
 %>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -29,28 +31,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <% if (user != null && ("ADMIN".equals(userRole) || "STAFF".equals(userRole))) { %>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<%= request.getContextPath() %>/admin/dashboard.jsp">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<%= request.getContextPath() %>/admin/products/list.jsp">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<%= request.getContextPath() %>/admin/inventory/stocks.jsp">Inventory</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<%= request.getContextPath() %>/admin/billing/create-bill.jsp">Billing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<%= request.getContextPath() %>/admin/reports/daily-sales.jsp">Reports</a>
-                    </li>
-                <% } %>
-            </ul>
-
-            <ul class="navbar-nav">
-                <% if (user != null) { %>
+            <ul class="navbar-nav ms-auto">
+                <% if (session.getAttribute("user") != null) { %>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Welcome, <%= firstName %>
@@ -70,22 +52,3 @@
 </nav>
 
 <div class="container-fluid mt-3">
-    <%-- Error/Success messages --%>
-    <% String error = (String) request.getAttribute("error"); %>
-    <% if (error != null) { %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <%= error %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <% } %>
-
-    <% String success = (String) request.getAttribute("success"); %>
-    <% if (success != null) { %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <%= success %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <% } %>
-</div>
-</body>
-</html>

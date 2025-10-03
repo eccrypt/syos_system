@@ -13,10 +13,7 @@ import com.syos.domain.model.ShelfStock;
 
 public class ShelfStockRepositoryImpl implements ShelfStockRepository {
 
-    private final ProductRepository productRepository;
-
     public ShelfStockRepositoryImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
     }
 
     @Override

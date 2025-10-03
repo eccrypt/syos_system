@@ -12,7 +12,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>BillingServlet</servlet-name>
-        <url-pattern>/api/billing/*</url-pattern>
+        <url-pattern>/billing/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -21,7 +21,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>InventoryServlet</servlet-name>
-        <url-pattern>/api/inventory/*</url-pattern>
+        <url-pattern>/inventory/*</url-pattern>
     </servlet-mapping>
 
 
@@ -31,7 +31,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ReportServlet</servlet-name>
-        <url-pattern>/api/reports/*</url-pattern>
+        <url-pattern>/reports/*</url-pattern>
     </servlet-mapping>
 
     <!-- Auth Servlet for web authentication -->

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.test.command.AddProductCommandTest" time="0.563" tests="9" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.test.command.AddProductCommandTest" time="0.36" tests="9" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-17\bin"/>
-    <property name="sun.java.command" value="C:\Users\rumai\AppData\Local\Temp\surefire5543808950726550337\surefirebooter-20251003100744284_3.jar C:\Users\rumai\AppData\Local\Temp\surefire5543808950726550337 2025-10-03T10-07-43_959-jvmRun1 surefire-20251003100744284_1tmp surefire_0-20251003100744284_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\rumai\AppData\Local\Temp\surefire9732372404587811635\surefirebooter-20251003140210257_3.jar C:\Users\rumai\AppData\Local\Temp\surefire9732372404587811635 2025-10-03T14-02-10_027-jvmRun1 surefire-20251003140210257_1tmp surefire_0-20251003140210257_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="d:\Projects\syos_system\target\test-classes;d:\Projects\syos_system\target\classes;C:\Users\rumai\.m2\repository\org\postgresql\postgresql\42.6.0\postgresql-42.6.0.jar;C:\Users\rumai\.m2\repository\org\checkerframework\checker-qual\3.31.0\checker-qual-3.31.0.jar;C:\Users\rumai\.m2\repository\org\mindrot\jbcrypt\0.4\jbcrypt-0.4.jar;C:\Users\rumai\.m2\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;C:\Users\rumai\.m2\repository\ch\qos\logback\logback-classic\1.5.6\logback-classic-1.5.6.jar;C:\Users\rumai\.m2\repository\ch\qos\logback\logback-core\1.5.6\logback-core-1.5.6.jar;C:\Users\rumai\.m2\repository\javax\servlet\javax.servlet-api\4.0.1\javax.servlet-api-4.0.1.jar;C:\Users\rumai\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.15.2\jackson-databind-2.15.2.jar;C:\Users\rumai\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.15.2\jackson-core-2.15.2.jar;C:\Users\rumai\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.15.2\jackson-annotations-2.15.2.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-catalina\9.0.80\tomcat-catalina-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-servlet-api\9.0.80\tomcat-servlet-api-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-jsp-api\9.0.80\tomcat-jsp-api-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-juli\9.0.80\tomcat-juli-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-annotations-api\9.0.80\tomcat-annotations-api-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-api\9.0.80\tomcat-api-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-jni\9.0.80\tomcat-jni-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-coyote\9.0.80\tomcat-coyote-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-util\9.0.80\tomcat-util-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-util-scan\9.0.80\tomcat-util-scan-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-jaspic-api\9.0.80\tomcat-jaspic-api-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\9.0.80\tomcat-embed-core-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\embed\tomcat-embed-jasper\9.0.80\tomcat-embed-jasper-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\9.0.80\tomcat-embed-el-9.0.80.jar;C:\Users\rumai\.m2\repository\org\eclipse\jdt\ecj\3.26.0\ecj-3.26.0.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-jasper\9.0.80\tomcat-jasper-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-el-api\9.0.80\tomcat-el-api-9.0.80.jar;C:\Users\rumai\.m2\repository\org\apache\tomcat\tomcat-jasper-el\9.0.80\tomcat-jasper-el-9.0.80.jar;C:\Users\rumai\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\rumai\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\rumai\.m2\repository\org\mockito\mockito-core\5.11.0\mockito-core-5.11.0.jar;C:\Users\rumai\.m2\repository\net\bytebuddy\byte-buddy\1.14.12\byte-buddy-1.14.12.jar;C:\Users\rumai\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.12\byte-buddy-agent-1.14.12.jar;C:\Users\rumai\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\rumai\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.0\junit-jupiter-api-5.10.0.jar;C:\Users\rumai\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\rumai\.m2\repository\org\junit\platform\junit-platform-commons\1.10.0\junit-platform-commons-1.10.0.jar;C:\Users\rumai\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\rumai\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.0\junit-jupiter-engine-5.10.0.jar;C:\Users\rumai\.m2\repository\org\junit\platform\junit-platform-engine\1.10.0\junit-platform-engine-1.10.0.jar;C:\Users\rumai\.m2\repository\org\mockito\mockito-junit-jupiter\5.11.0\mockito-junit-jupiter-5.11.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\rumai\AppData\Local\Temp\surefire5543808950726550337\surefirebooter-20251003100744284_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\rumai\AppData\Local\Temp\surefire9732372404587811635\surefirebooter-20251003140210257_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.6+9-LTS-190"/>
@@ -56,10 +56,10 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="shouldHandleProductServiceIllegalStateException" classname="com.test.command.AddProductCommandTest" time="0.298"/>
+  <testcase name="shouldHandleProductServiceIllegalStateException" classname="com.test.command.AddProductCommandTest" time="0.258"/>
   <testcase name="shouldSuccessfullyAddProduct" classname="com.test.command.AddProductCommandTest" time="0.009"/>
   <testcase name="shouldRetryUntilValidUniqueCodeEntered" classname="com.test.command.AddProductCommandTest" time="0.013"/>
-  <testcase name="shouldHandleProductServiceIllegalArgumentException" classname="com.test.command.AddProductCommandTest" time="0.007"/>
+  <testcase name="shouldHandleProductServiceIllegalArgumentException" classname="com.test.command.AddProductCommandTest" time="0.009"/>
   <testcase name="shouldHandleProductServiceGenericRuntimeException" classname="com.test.command.AddProductCommandTest" time="0.013">
     <system-err><![CDATA[java.lang.RuntimeException: Something completely unexpected happened!
 	at com.syos.application.command.AddProductCommand.execute(AddProductCommand.java:31)
@@ -137,8 +137,8 @@
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="shouldHandleDuplicateProductCode" classname="com.test.command.AddProductCommandTest" time="0.029"/>
-  <testcase name="shouldHandleInvalidPriceFormat" classname="com.test.command.AddProductCommandTest" time="0.111"/>
-  <testcase name="shouldAddProductWithMinPrice" classname="com.test.command.AddProductCommandTest" time="0.038"/>
-  <testcase name="shouldHandleBlankName" classname="com.test.command.AddProductCommandTest" time="0.013"/>
+  <testcase name="shouldHandleDuplicateProductCode" classname="com.test.command.AddProductCommandTest" time="0.015"/>
+  <testcase name="shouldHandleInvalidPriceFormat" classname="com.test.command.AddProductCommandTest" time="0.011"/>
+  <testcase name="shouldAddProductWithMinPrice" classname="com.test.command.AddProductCommandTest" time="0.01"/>
+  <testcase name="shouldHandleBlankName" classname="com.test.command.AddProductCommandTest" time="0.006"/>
 </testsuite>

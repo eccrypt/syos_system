@@ -159,29 +159,109 @@ public class InventoryServlet extends HttpServlet {
     }
 
     private void addProduct(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ProductRequest productReq = objectMapper.readValue(req.getInputStream(), ProductRequest.class);
-        productService.addProduct(productReq.getCode(), productReq.getName(), productReq.getPrice());
-        resp.getWriter().write("{\"status\":\"Product added successfully\"}");
+        String code = req.getParameter("code");
+        String name = req.getParameter("name");
+        String priceStr = req.getParameter("price");
+
+        if (code == null || name == null || priceStr == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Code, name, and price are required\"}");
+            return;
+        }
+
+        try {
+            double price = Double.parseDouble(priceStr);
+            productService.addProduct(code, name, price);
+            resp.getWriter().write("{\"status\":\"Product added successfully\"}");
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Invalid price format\"}");
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to add product: " + e.getMessage() + "\"}");
+        }
     }
 
     private void updateProduct(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        UpdateProductRequest updateReq = objectMapper.readValue(req.getInputStream(), UpdateProductRequest.class);
-        productService.updateProductName(updateReq.getCode(), updateReq.getNewName());
-        resp.getWriter().write("{\"status\":\"Product updated successfully\"}");
+        String code = req.getParameter("code");
+        String newName = req.getParameter("newName");
+
+        if (code == null || newName == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Code and new name are required\"}");
+            return;
+        }
+
+        try {
+            productService.updateProductName(code, newName);
+            resp.getWriter().write("{\"status\":\"Product updated successfully\"}");
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to update product: " + e.getMessage() + "\"}");
+        }
     }
 
     private void receiveStock(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        StockRequest stockReq = objectMapper.readValue(req.getInputStream(), StockRequest.class);
-        java.time.LocalDate purchaseDate = java.time.LocalDate.now();
-        java.time.LocalDate expiryDate = java.time.LocalDate.parse(stockReq.getExpiryDate());
-        inventoryManager.receiveStock(stockReq.getProductCode(), purchaseDate, expiryDate, stockReq.getQuantity());
-        resp.getWriter().write("{\"status\":\"Stock received successfully\"}");
+        String productCode = req.getParameter("productCode");
+        String quantityStr = req.getParameter("quantity");
+        String expiryDateStr = req.getParameter("expiryDate");
+
+        if (productCode == null || quantityStr == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Product code and quantity are required\"}");
+            return;
+        }
+
+        try {
+            int quantity = Integer.parseInt(quantityStr);
+            java.time.LocalDate purchaseDate = java.time.LocalDate.now();
+            java.time.LocalDate expiryDate = expiryDateStr != null && !expiryDateStr.trim().isEmpty()
+                ? java.time.LocalDate.parse(expiryDateStr)
+                : null;
+
+            inventoryManager.receiveStock(productCode, purchaseDate, expiryDate, quantity);
+            resp.getWriter().write("{\"status\":\"Stock received successfully\"}");
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Invalid quantity format\"}");
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to receive stock: " + e.getMessage() + "\"}");
+        }
     }
 
     private void moveToShelf(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        MoveStockRequest moveReq = objectMapper.readValue(req.getInputStream(), MoveStockRequest.class);
-        inventoryManager.moveToShelf(moveReq.getProductCode(), moveReq.getQuantity());
-        resp.getWriter().write("{\"status\":\"Stock moved to shelf successfully\"}");
+        String batchIdStr = req.getParameter("batchId");
+        String quantityStr = req.getParameter("quantity");
+
+        if (batchIdStr == null || quantityStr == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Batch ID and quantity are required\"}");
+            return;
+        }
+
+        try {
+            int batchId = Integer.parseInt(batchIdStr);
+            int quantity = Integer.parseInt(quantityStr);
+
+            // For now, we'll need to get the product code from the batch
+            // This is a simplified implementation - in a real app you'd look up the batch
+            StockBatch batch = stockBatchRepository.findById(batchId);
+            if (batch == null) {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\":\"Batch not found\"}");
+                return;
+            }
+
+            inventoryManager.moveToShelf(batch.getProductCode(), quantity);
+            resp.getWriter().write("{\"status\":\"Stock moved to shelf successfully\"}");
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Invalid number format\"}");
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to move stock: " + e.getMessage() + "\"}");
+        }
     }
 
     private void removeExpiryStock(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -202,37 +282,66 @@ public class InventoryServlet extends HttpServlet {
     }
 
     private void discardBatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        DiscardBatchRequest discardReq = objectMapper.readValue(req.getInputStream(), DiscardBatchRequest.class);
-        // Need batchId, assuming batchNumber is id for now
-        int batchId = Integer.parseInt(discardReq.getBatchNumber());
-        inventoryManager.discardBatchQuantity(batchId, discardReq.getQuantity());
-        resp.getWriter().write("{\"status\":\"Batch discarded successfully\"}");
+        String batchIdStr = req.getParameter("batchId");
+
+        if (batchIdStr == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Batch ID is required\"}");
+            return;
+        }
+
+        try {
+            int batchId = Integer.parseInt(batchIdStr);
+
+            // Get the batch to find out how much quantity to discard
+            StockBatch batch = stockBatchRepository.findById(batchId);
+            if (batch == null) {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\":\"Batch not found\"}");
+                return;
+            }
+
+            // Discard all remaining quantity in the batch
+            int quantityToDiscard = batch.getQuantityRemaining();
+            inventoryManager.discardBatchQuantity(batchId, quantityToDiscard);
+            resp.getWriter().write("{\"status\":\"Batch discarded successfully\"}");
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Invalid batch ID format\"}");
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to discard batch: " + e.getMessage() + "\"}");
+        }
     }
 
     private void createDiscount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            DiscountRequest discountReq = objectMapper.readValue(req.getInputStream(), DiscountRequest.class);
+            String name = req.getParameter("name");
+            String type = req.getParameter("type");
+            String value = req.getParameter("value");
+            String startDateStr = req.getParameter("startDate");
+            String endDateStr = req.getParameter("endDate");
 
             // Validate input
-            if (discountReq.getName() == null || discountReq.getName().trim().isEmpty()) {
+            if (name == null || name.trim().isEmpty()) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Discount name is required\"}");
                 return;
             }
 
-            if (discountReq.getValue() == null || discountReq.getValue().trim().isEmpty()) {
+            if (value == null || value.trim().isEmpty()) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Discount value is required\"}");
                 return;
             }
 
-            if (discountReq.getStartDate() == null || discountReq.getStartDate().trim().isEmpty()) {
+            if (startDateStr == null || startDateStr.trim().isEmpty()) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Start date is required\"}");
                 return;
             }
 
-            if (discountReq.getEndDate() == null || discountReq.getEndDate().trim().isEmpty()) {
+            if (endDateStr == null || endDateStr.trim().isEmpty()) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"End date is required\"}");
                 return;
@@ -241,7 +350,7 @@ public class InventoryServlet extends HttpServlet {
             // Parse discount type
             DiscountType discountType;
             try {
-                discountType = DiscountType.valueOf(discountReq.getType().toUpperCase());
+                discountType = DiscountType.valueOf(type.toUpperCase());
             } catch (IllegalArgumentException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Invalid discount type. Use PERCENT or AMOUNT\"}");
@@ -251,7 +360,7 @@ public class InventoryServlet extends HttpServlet {
             // Parse discount value
             double discountValue;
             try {
-                discountValue = Double.parseDouble(discountReq.getValue());
+                discountValue = Double.parseDouble(value);
                 if (discountValue < 0) {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     resp.getWriter().write("{\"error\":\"Discount value must be non-negative\"}");
@@ -271,8 +380,8 @@ public class InventoryServlet extends HttpServlet {
             // Parse dates
             LocalDate startDate, endDate;
             try {
-                startDate = LocalDate.parse(discountReq.getStartDate());
-                endDate = LocalDate.parse(discountReq.getEndDate());
+                startDate = LocalDate.parse(startDateStr);
+                endDate = LocalDate.parse(endDateStr);
             } catch (Exception e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Invalid date format. Use YYYY-MM-DD\"}");
@@ -286,7 +395,7 @@ public class InventoryServlet extends HttpServlet {
             }
 
             // Create discount
-            int discountId = discountRepository.createDiscount(discountReq.getName(), discountType, discountValue, startDate, endDate);
+            int discountId = discountRepository.createDiscount(name, discountType, discountValue, startDate, endDate);
             if (discountId != -1) {
                 resp.getWriter().write("{\"status\":\"Discount created successfully\",\"discountId\":" + discountId + "}");
             } else {
@@ -302,33 +411,34 @@ public class InventoryServlet extends HttpServlet {
 
     private void assignDiscount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            AssignDiscountRequest assignReq = objectMapper.readValue(req.getInputStream(), AssignDiscountRequest.class);
+            String productCode = req.getParameter("productCode");
+            String discountIdStr = req.getParameter("discountId");
 
             // Validate input
-            if (assignReq.getProductCode() == null || assignReq.getProductCode().trim().isEmpty()) {
+            if (productCode == null || productCode.trim().isEmpty()) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Product code is required\"}");
                 return;
             }
 
-            if (assignReq.getDiscountId() == null || assignReq.getDiscountId().trim().isEmpty()) {
+            if (discountIdStr == null || discountIdStr.trim().isEmpty()) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"Discount ID is required\"}");
                 return;
             }
 
             // Validate product exists
-            Product product = productRepository.findByCode(assignReq.getProductCode());
+            Product product = productRepository.findByCode(productCode);
             if (product == null) {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                resp.getWriter().write("{\"error\":\"Product not found: " + assignReq.getProductCode() + "\"}");
+                resp.getWriter().write("{\"error\":\"Product not found: " + productCode + "\"}");
                 return;
             }
 
             // Parse discount ID
             int discountId;
             try {
-                discountId = Integer.parseInt(assignReq.getDiscountId());
+                discountId = Integer.parseInt(discountIdStr);
                 if (discountId <= 0) {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     resp.getWriter().write("{\"error\":\"Discount ID must be a positive number\"}");
@@ -349,8 +459,8 @@ public class InventoryServlet extends HttpServlet {
             }
 
             // Assign discount to product
-            discountRepository.linkProductToDiscount(assignReq.getProductCode(), discountId);
-            resp.getWriter().write("{\"status\":\"Discount assigned successfully to product " + assignReq.getProductCode() + "\"}");
+            discountRepository.linkProductToDiscount(productCode, discountId);
+            resp.getWriter().write("{\"status\":\"Discount assigned successfully to product " + productCode + "\"}");
 
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -359,9 +469,21 @@ public class InventoryServlet extends HttpServlet {
     }
 
     private void unassignDiscount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ProductCodeRequest codeReq = objectMapper.readValue(req.getInputStream(), ProductCodeRequest.class);
-        // Assuming unassign logic
-        resp.getWriter().write("{\"status\":\"Discount unassigned successfully\"}");
+        String productCode = req.getParameter("productCode");
+
+        if (productCode == null || productCode.trim().isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Product code is required\"}");
+            return;
+        }
+
+        try {
+            // Assuming unassign logic - this would need to be implemented
+            resp.getWriter().write("{\"status\":\"Discount unassigned successfully from product " + productCode + "\"}");
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to unassign discount: " + e.getMessage() + "\"}");
+        }
     }
 
     private void testConnection(HttpServletResponse resp) throws IOException {

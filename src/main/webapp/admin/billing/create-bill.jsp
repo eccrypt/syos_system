@@ -61,20 +61,7 @@
             </div>
         </div>
 
-        <%-- Error/Success messages --%>
-        <% String error = (String) request.getAttribute("error"); %>
-        <% if (error != null) { %>
-            <div class="alert alert-danger" role="alert">
-                <%= error %>
-            </div>
-        <% } %>
-
-        <% String success = (String) request.getAttribute("success"); %>
-        <% if (success != null) { %>
-            <div class="alert alert-success" role="alert">
-                <%= success %>
-            </div>
-        <% } %>
+        <%-- Error/Success messages are handled in header.jsp --%>
 
         <div class="row">
             <!-- Product Selection -->
@@ -91,13 +78,16 @@
                             </div>
                             <div class="col-md-4">
                                 <button class="btn btn-outline-primary w-100" onclick="searchProduct()">
-                                    <i class="fas fa-search me-1"></i>Search
+                                    <i class="fas fa-search me-1"></i>Filter
                                 </button>
                             </div>
                         </div>
 
-                        <div id="productResults" class="row" style="display: none;">
-                            <!-- Product search results will appear here -->
+                        <div id="productResults">
+                            <div class="text-center py-4">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+                                <p>Loading products...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,28 +164,120 @@
 <script>
 let billItems = [];
 let itemCount = 0;
+let allProducts = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadAllProducts();
+
+    // Add real-time search
+    document.getElementById('productSearch').addEventListener('input', function() {
+        searchProduct();
+    });
+});
+
+function formatPrice(price) {
+    if (typeof price === 'number' && !isNaN(price)) {
+        return price.toFixed(2);
+    }
+    return '0.00';
+}
+
+function formatPriceValue(price) {
+    if (typeof price === 'number' && !isNaN(price)) {
+        return price;
+    }
+    return 0;
+}
+
+function loadAllProducts() {
+    fetch('<%= request.getContextPath() %>/admin/products/search?q=')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load products');
+            }
+            return response.json();
+        })
+        .then(products => {
+            allProducts = products;
+            displayProducts(products);
+        })
+        .catch(error => {
+            document.getElementById('productResults').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Error loading products: ${error.message}
+                </div>
+            `;
+        });
+}
+
+function displayProducts(products) {
+    const resultsDiv = document.getElementById('productResults');
+
+    if (products.length === 0) {
+        resultsDiv.innerHTML = `
+            <div class="text-center py-4 text-muted">
+                <i class="fas fa-box-open fa-2x mb-2"></i>
+                <p>No products available</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    products.forEach(product => {
+        html += `
+            <tr>
+                <td><code>${product.code}</code></td>
+                <td>${product.name}</td>
+                <td>$${formatPrice(product.price)}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="addItemToBill('${product.code}', '${product.name}', formatPriceValue(product.price))">
+                        <i class="fas fa-plus me-1"></i>Add
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    resultsDiv.innerHTML = html;
+}
 
 // Product search
 function searchProduct() {
     const query = document.getElementById('productSearch').value.trim();
     if (!query) {
-        alert('Please enter a product code or name');
+        // If no query, show all products
+        displayProducts(allProducts);
         return;
     }
 
-    // This would normally make an AJAX call to search products
-    // For now, show a mock result
-    const resultsDiv = document.getElementById('productResults');
-    resultsDiv.innerHTML = `
-        <div class="col-12">
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                Product search functionality would integrate with the backend API here.
-                In a real implementation, this would search for products and display them for selection.
-            </div>
-        </div>
-    `;
-    resultsDiv.style.display = 'block';
+    // Filter products based on query
+    const filteredProducts = allProducts.filter(product =>
+        product.code.toLowerCase().includes(query.toLowerCase()) ||
+        product.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    displayProducts(filteredProducts);
 }
 
 // Add item to bill (mock function)
@@ -321,19 +403,57 @@ document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         return;
     }
 
+    let cashTendered = 0;
     if (paymentMethod === 'cash') {
-        const cashTendered = parseFloat(document.getElementById('cashTendered').value) || 0;
+        cashTendered = parseFloat(document.getElementById('cashTendered').value) || 0;
         const total = parseFloat(document.getElementById('total').textContent) || 0;
 
         if (cashTendered < total) {
             alert('Cash tendered is less than the total amount');
             return;
         }
+    } else {
+        // For card payment, assume full amount is tendered
+        cashTendered = parseFloat(document.getElementById('total').textContent) || 0;
     }
 
-    // This would normally submit to the billing servlet
-    alert('Bill processing would happen here. In a real implementation, this would create the bill and update inventory.');
-    clearBill();
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const originalText = checkoutBtn.innerHTML;
+    checkoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    checkoutBtn.disabled = true;
+
+    const billRequest = {
+        items: billItems.map(item => ({
+            productCode: item.productCode,
+            quantity: item.quantity
+        })),
+        cashTendered: cashTendered
+    };
+
+    fetch('<%= request.getContextPath() %>/billing/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(billRequest)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error || 'Failed to create bill'); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(`Bill created successfully!\nSerial Number: ${data.serialNumber}\nTotal: $${data.totalAmount.toFixed(2)}\nCash Tendered: $${data.cashTendered.toFixed(2)}\nChange: $${data.changeReturned.toFixed(2)}`);
+        clearBill();
+    })
+    .catch(error => {
+        alert('Error creating bill: ' + error.message);
+    })
+    .finally(() => {
+        checkoutBtn.innerHTML = originalText;
+        checkoutBtn.disabled = false;
+    });
 });
 </script>
 

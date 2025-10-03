@@ -2,21 +2,27 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.syos.domain.model.Product" %>
 <%@ page import="com.syos.domain.model.User" %>
+<%@ page import="com.syos.infrastructure.repository.ProductRepository" %>
+<%@ page import="com.syos.infrastructure.repository.ProductRepositoryImpl" %>
+<%@ page import="java.text.DecimalFormat" %>
 <%
     // Check authentication and role
     User user = (User) session.getAttribute("user");
+    String userRole = (String) session.getAttribute("userRole");
+    List<Product> products = null;
     if (user == null) {
         response.sendRedirect(request.getContextPath() + "/login.jsp");
-        return;
-    }
-
-    String userRole = (String) session.getAttribute("userRole");
-    if (!"ADMIN".equals(userRole) && !"STAFF".equals(userRole)) {
+    } else if (!"ADMIN".equals(userRole) && !"STAFF".equals(userRole)) {
         response.sendRedirect(request.getContextPath() + "/index.jsp");
-        return;
-    }
+    } else {
+        // Fetch products from repository
+        ProductRepository productRepository = new ProductRepositoryImpl();
+        products = productRepository.findAll();
 
-    request.setAttribute("pageTitle", "Product Management");
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        request.setAttribute("pageTitle", "Product Management");
+    }
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
@@ -73,15 +79,11 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">All Products</h5>
-                    <input type="text" class="form-control form-control-sm" id="searchInput"
-                           placeholder="Search products..." style="width: 250px;">
-                </div>
+                <h5 class="mb-0">All Products</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped" id="productsTable">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Code</th>
@@ -92,24 +94,22 @@
                         </thead>
                         <tbody>
                             <%
-                                // This would normally come from a servlet
-                                List<Product> products = (List<Product>) request.getAttribute("products");
                                 if (products != null && !products.isEmpty()) {
                                     for (Product product : products) {
                             %>
                                 <tr>
                                     <td><%= product.getCode() %></td>
                                     <td><%= product.getName() %></td>
-                                    <td>$<%= String.format("%.2f", product.getPrice()) %></td>
+                                    <td>$<%= df.format(product.getPrice()) %></td>
                                     <td>
-                                        <a href="<%= request.getContextPath() %>/admin/products/edit.jsp?code=<%= product.getCode() %>"
-                                           class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-danger"
-                                                onclick="deleteProduct('<%= product.getCode() %>', '<%= product.getName() %>')">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             <%
@@ -131,39 +131,5 @@
     </div>
 </div>
 
-<script>
-// Search functionality
-document.getElementById('searchInput').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#productsTable tbody tr');
-
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        if (text.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-
-function deleteProduct(code, name) {
-    if (confirm(`Are you sure you want to delete the product "${name}"?`)) {
-        // This would normally submit a form or make an AJAX call
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '<%= request.getContextPath() %>/admin/products/delete';
-
-        const codeInput = document.createElement('input');
-        codeInput.type = 'hidden';
-        codeInput.name = 'code';
-        codeInput.value = code;
-
-        form.appendChild(codeInput);
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-</script>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>

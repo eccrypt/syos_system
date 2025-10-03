@@ -2,6 +2,7 @@ package com.syos.presentation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -21,7 +22,6 @@ public class BillingServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Check authentication
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -127,17 +127,109 @@ public class BillingServlet extends HttpServlet {
 
     private void getAllBills(HttpServletResponse resp) throws IOException {
         try {
-            resp.getWriter().write("{\"bills\":\"Bill listing not implemented yet\"}");
+            List<Bill> bills = billingService.getAllBills();
+            List<BillSummary> billSummaries = bills.stream()
+                .map(bill -> new BillSummary(
+                    bill.getSerialNumber(),
+                    bill.getBillDate(),
+                    bill.getTotalAmount(),
+                    bill.getCashTendered(),
+                    bill.getChangeReturned(),
+                    bill.getItems() != null ? bill.getItems().size() : 0
+                ))
+                .toList();
+            resp.setContentType("application/json");
+            objectMapper.writeValue(resp.getWriter(), billSummaries);
         } catch (Exception e) {
-            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to retrieve bills: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private static class BillSummary {
+        public int serialNumber;
+        public long billDate; // timestamp
+        public double totalAmount;
+        public double cashTendered;
+        public double changeReturned;
+        public int itemCount;
+
+        public BillSummary(int serialNumber, Date billDate, double totalAmount, double cashTendered, double changeReturned, int itemCount) {
+            this.serialNumber = serialNumber;
+            this.billDate = billDate.getTime();
+            this.totalAmount = totalAmount;
+            this.cashTendered = cashTendered;
+            this.changeReturned = changeReturned;
+            this.itemCount = itemCount;
         }
     }
 
     private void getBillBySerial(int serialNumber, HttpServletResponse resp) throws IOException {
         try {
-            resp.getWriter().write("{\"bill\":\"Bill with serial " + serialNumber + " not found\"}");
+            Bill bill = billingService.getBillBySerial(serialNumber);
+            if (bill != null) {
+                BillDetail billDetail = new BillDetail(
+                    bill.getId(),
+                    bill.getSerialNumber(),
+                    bill.getBillDate(),
+                    bill.getTotalAmount(),
+                    bill.getCashTendered(),
+                    bill.getChangeReturned(),
+                    bill.getItems() != null ? bill.getItems().stream()
+                        .map(item -> new BillItemDetail(
+                            item.getProduct().getCode(),
+                            item.getProduct().getName(),
+                            item.getQuantity(),
+                            item.getTotalPrice(),
+                            item.getDiscountAmount()
+                        ))
+                        .toList() : new ArrayList<>()
+                );
+                resp.setContentType("application/json");
+                objectMapper.writeValue(resp.getWriter(), billDetail);
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\":\"Bill with serial " + serialNumber + " not found\"}");
+            }
         } catch (Exception e) {
-            resp.getWriter().write("{\"error\":\"Database connection failed: " + e.getMessage() + "\"}");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to retrieve bill: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private static class BillDetail {
+        public int id;
+        public int serialNumber;
+        public long billDate;
+        public double totalAmount;
+        public double cashTendered;
+        public double changeReturned;
+        public List<BillItemDetail> items;
+
+        public BillDetail(int id, int serialNumber, Date billDate, double totalAmount, double cashTendered, double changeReturned, List<BillItemDetail> items) {
+            this.id = id;
+            this.serialNumber = serialNumber;
+            this.billDate = billDate.getTime();
+            this.totalAmount = totalAmount;
+            this.cashTendered = cashTendered;
+            this.changeReturned = changeReturned;
+            this.items = items;
+        }
+    }
+
+    private static class BillItemDetail {
+        public String productCode;
+        public String productName;
+        public int quantity;
+        public double totalPrice;
+        public double discountAmount;
+
+        public BillItemDetail(String productCode, String productName, int quantity, double totalPrice, double discountAmount) {
+            this.productCode = productCode;
+            this.productName = productName;
+            this.quantity = quantity;
+            this.totalPrice = totalPrice;
+            this.discountAmount = discountAmount;
         }
     }
 

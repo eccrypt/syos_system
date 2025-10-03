@@ -93,4 +93,12 @@ public class BillingService {
         public int getQuantity() { return quantity; }
         public void setQuantity(int quantity) { this.quantity = quantity; }
     }
+
+    public List<Bill> getAllBills() {
+        return billingRepository.findAll();
+    }
+
+    public Bill getBillBySerial(int serialNumber) {
+        return billingRepository.findBySerial(serialNumber);
+    }
 }

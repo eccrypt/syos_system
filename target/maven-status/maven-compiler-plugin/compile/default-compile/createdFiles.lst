@@ -15,6 +15,7 @@ com\syos\application\command\UpdateProductCommand.class
 com\syos\application\strategy\PricingStrategy.class
 com\syos\infrastructure\repository\UserRepository.class
 com\syos\application\command\CreateDiscountCommand.class
+com\syos\presentation\ProductWebServlet$ProductSearchResult.class
 com\syos\application\command\UnassignDiscountCommand.class
 com\syos\application\command\ViewStockCommand.class
 com\syos\domain\model\BillItem.class
@@ -60,6 +61,7 @@ com\syos\domain\enums\TransactionType.class
 com\syos\application\command\DiscardExpiringBatchesCommand.class
 com\syos\application\service\DiscountCreationService.class
 com\syos\application\service\ProductService.class
+com\syos\presentation\BillingServlet$BillDetail.class
 com\syos\infrastructure\config\ConfigLoader.class
 com\syos\infrastructure\repository\DiscountRepository.class
 com\syos\application\command\ViewAllProductsWithDiscountsCommand.class
@@ -67,7 +69,9 @@ com\syos\application\command\AssignDiscountCommand.class
 com\syos\application\command\ViewExpiryStockCommand.class
 com\syos\domain\model\Product.class
 com\syos\presentation\AuthServlet.class
+com\syos\presentation\BillingServlet$BillSummary.class
 com\syos\presentation\InventoryServlet$DiscardBatchRequest.class
+com\syos\presentation\BillingServlet$BillItemDetail.class
 com\syos\application\command\ViewAllInventoryStocksCommand.class
 com\syos\application\service\ReportService.class
 com\syos\domain\model\Bill.class

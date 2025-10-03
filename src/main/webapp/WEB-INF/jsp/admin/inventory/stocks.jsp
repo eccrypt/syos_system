@@ -192,7 +192,7 @@ document.addEventListener('click', function(e) {
             // This would normally make an AJAX call or submit a form
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '<%= request.getContextPath() %>/admin/inventory/discard-batch';
+            form.action = '<%= request.getContextPath() %>/inventory/discard-batch';
 
             const batchIdInput = document.createElement('input');
             batchIdInput.type = 'hidden';

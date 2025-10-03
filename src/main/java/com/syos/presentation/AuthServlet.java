@@ -40,9 +40,10 @@ public class AuthServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String path = req.getServletPath();
         String action = req.getParameter("action");
 
-        if ("logout".equals(action)) {
+        if ("/logout".equals(path) || "logout".equals(action)) {
             handleLogout(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");

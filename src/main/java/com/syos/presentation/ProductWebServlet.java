@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syos.application.service.ProductService;
 import com.syos.application.service.ProductServiceImpl;
 import com.syos.domain.model.Product;
@@ -18,6 +19,7 @@ public class ProductWebServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final ProductRepository productRepository;
     private final ProductService productService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ProductWebServlet() {
         this.productRepository = new ProductRepositoryImpl();
@@ -29,8 +31,10 @@ public class ProductWebServlet extends HttpServlet {
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
-        if ("/list".equals(path)) {
+        if ("/list".equals(path) || "/list.jsp".equals(path)) {
             listProducts(req, resp);
+        } else if ("/search".equals(path)) {
+            searchProducts(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -69,6 +73,46 @@ public class ProductWebServlet extends HttpServlet {
             req.setAttribute("error", "Failed to load products: " + e.getMessage());
             req.getRequestDispatcher("/WEB-INF/jsp/admin/products/list.jsp").forward(req, resp);
         }
+    }
+
+    private void searchProducts(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String query = req.getParameter("q");
+        if (query == null || query.trim().isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Query parameter 'q' is required\"}");
+            return;
+        }
+
+        try {
+            List<Product> products = productRepository.findAll();
+            List<ProductSearchResult> matchingProducts = products.stream()
+                .filter(p -> p.getCode().toLowerCase().contains(query.toLowerCase()) ||
+                           p.getName().toLowerCase().contains(query.toLowerCase()))
+                .map(p -> new ProductSearchResult(p.getCode(), p.getName(), p.getPrice()))
+                .toList();
+
+            resp.setContentType("application/json");
+            objectMapper.writeValue(resp.getWriter(), matchingProducts);
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Failed to search products: " + e.getMessage() + "\"}");
+        }
+    }
+
+    private static class ProductSearchResult {
+        private String code;
+        private String name;
+        private double price;
+
+        public ProductSearchResult(String code, String name, double price) {
+            this.code = code;
+            this.name = name;
+            this.price = price;
+        }
+
+        public String getCode() { return code; }
+        public String getName() { return name; }
+        public double getPrice() { return price; }
     }
 
     private void addProduct(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {

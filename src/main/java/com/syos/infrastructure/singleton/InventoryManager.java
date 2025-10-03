@@ -25,7 +25,6 @@ public class InventoryManager {
 	private final ShelfStrategy strategy;
 	private final List<StockObserver> observers = new ArrayList<>();
 
-	// constructor to enforce Singleton pattern
 	public InventoryManager(ShelfStrategy strategy, StockBatchRepository batchRepository,
 			ShelfStockRepository shelfRepository, ProductRepository productRepository) {
 		this.strategy = strategy;
